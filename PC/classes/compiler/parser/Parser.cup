@@ -1,0 +1,55 @@
+// Definición de paquetes y código importado
+package compiler.scanner;
+
+import java_cup.runtime.Symbol;
+
+// Definición de terminales (tokens)
+terminal INTLITERAL, ID, PLUS, MINUS, TIMES, DIVIDE, LPAREN, RPAREN;
+
+// Definición de no terminales
+non terminal Expr expr;
+non terminal Term term;
+non terminal Factor factor;
+
+// Precedencia de operadores
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE;
+
+start with expr;
+
+////////////////////////////////////////////////////////////////////////////
+// Producciones de la gramática
+////////////////////////////////////////////////////////////////////////////
+
+expr ::=
+    expr:e1 PLUS term:e2
+    {: RESULT = new Integer(((Integer)e1.value).intValue() + ((Integer)e2.value).intValue()); :}
+    |
+    expr:e1 MINUS term:e2
+    {: RESULT = new Integer(((Integer)e1.value).intValue() - ((Integer)e2.value).intValue()); :}
+    |
+    term:t
+    {: RESULT = t.value; :}
+    ;
+
+term ::=
+    term:t TIMES factor:f
+    {: RESULT = new Integer(((Integer)t.value).intValue() * ((Integer)f.value).intValue()); :}
+    |
+    term:t DIVIDE factor:f
+    {: RESULT = new Integer(((Integer)t.value).intValue() / ((Integer)f.value).intValue()); :}
+    |
+    factor:f
+    {: RESULT = f.value; :}
+    ;
+
+factor ::=
+    LPAREN expr:e RPAREN
+    {: RESULT = e.value; :}
+    |
+    INTLITERAL:i
+    {: RESULT = new Integer(i.intValue()); :}
+    |
+    ID:i
+    {: RESULT = i.value; :}
+    ;

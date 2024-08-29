@@ -1,0 +1,10 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/java-cup-11b.jar",
+        "lib/java-cup-11b-runtime.jar",
+        "lib/jflex-1.9.1.jar"
+    ],
+    "java.project.sourcePaths": [
+        "class"
+    ]
+}
