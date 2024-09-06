@@ -1,7 +1,10 @@
 package compiler;
+
 import compiler.scanner.Scanner;
+import compiler.parser.sym;  // Importar la clase sym generada por CUP
 import java.io.FileReader;
 import java.io.IOException;
+import java_cup.runtime.Symbol;
 
 public class Compiler {
     public static void main(String[] args) {
@@ -35,17 +38,32 @@ public class Compiler {
         }
 
         try (FileReader fileReader = new FileReader(inputFile)) {
-            // Aquí es donde realizarías las operaciones del compilador
             System.out.println("Compiling " + inputFile + " to stage: " + targetStage);
 
             // Dependiendo de la etapa solicitada, llama a las clases necesarias
             if (targetStage.equals("scan")) {
                 Scanner scanner = new Scanner(fileReader);
-                // Ejecuta la fase de escaneo
+                Symbol token;
+                
+                System.out.println("Starting lexical analysis (scanning)...");
+
+                // Recorre los tokens generados por el scanner
+                while ((token = scanner.next_token()) != null) {
+                    System.out.println("Token: " + sym.terminalNames[token.sym] + ", Value: " + token.value);
+                    
+                    // Para detener al final del archivo (EOF)
+                    if (token.sym == sym.EOF) {
+                        System.out.println("End of file reached.");
+                        break;
+                    }
+                }
+
+                System.out.println("Lexical analysis (scanning) completed.");
+
             } else if (targetStage.equals("parse")) {
-                // Ejecuta la fase de parsing
+                // Ejecuta la fase de parsing (a completar)
             } else if (targetStage.equals("ast")) {
-                // Ejecuta la fase de AST
+                // Ejecuta la fase de AST (a completar)
             }
             // Continúa con las otras fases según sea necesario
         } catch (IOException e) {
