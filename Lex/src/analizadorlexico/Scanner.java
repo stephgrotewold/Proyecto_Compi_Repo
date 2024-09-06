@@ -41,11 +41,11 @@ public class Scanner {
             if (isArithOp(c)) {
                 addToken(buffer);
                 tokens.add(new Token(ARITH_OP, String.valueOf(c), this.line, column));
-            } else if (Character.isDigit(c)) {
+            } else if (isDigit(c)) {
                 buffer.append(c);
-            } else if (Character.isLetter(c)) {
+            } else if (isAlpha(c)) {
                 buffer.append(c);
-            } else if (Character.isWhitespace(c)) {
+            } else if (isWhitespace(c)) {
                 addToken(buffer);
             } else {
                 addToken(buffer);
@@ -65,13 +65,41 @@ public class Scanner {
     }
 
     private int determineType(String value) {
-        if (value.matches("\\d+")) return DIGIT;
-        if (value.matches("[a-zA-Z][a-zA-Z0-9]*")) return ID;
-        if (value.matches("[a-zA-Z]")) return ALPHA;
+        if (isAllDigits(value)) return DIGIT;
+        if (isValidIdentifier(value)) return ID;
+        if (value.length() == 1 && isAlpha(value.charAt(0))) return ALPHA;
         return UNKNOWN;
     }
 
     private boolean isArithOp(char c) {
         return c == '+' || c == '-' || c == '*' || c == '/' || c == '%';
+    }
+
+    private boolean isDigit(char c) {
+        return c >= '0' && c <= '9';
+    }
+
+    private boolean isAlpha(char c) {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    }
+
+    private boolean isWhitespace(char c) {
+        return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+    }
+
+    private boolean isAllDigits(String s) {
+        for (char c : s.toCharArray()) {
+            if (!isDigit(c)) return false;
+        }
+        return true;
+    }
+
+    private boolean isValidIdentifier(String s) {
+        if (s.isEmpty() || !isAlpha(s.charAt(0))) return false;
+        for (int i = 1; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (!isAlpha(c) && !isDigit(c)) return false;
+        }
+        return true;
     }
 }
