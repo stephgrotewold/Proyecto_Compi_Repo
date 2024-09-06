@@ -12,10 +12,12 @@ import java_cup.runtime.*;
 %{
   // Código de usuario que se insertará en la clase Scanner
   private Symbol symbol(int type) {
+    System.out.println("Procesando línea: " + (yyline+1));  // Agregar esta línea para depuración
     return new Symbol(type, yyline+1, yycolumn+1);
   }
 
   private Symbol symbol(int type, Object value) {
+    System.out.println("Procesando línea: " + (yyline+1));  // Agregar esta línea para depuración
     return new Symbol(type, yyline+1, yycolumn+1, value);
   }
 %}
@@ -29,6 +31,7 @@ STRINGLITERAL = \"([^\"]*)\"
 
 // Palabras clave
 "class"      { return symbol(sym.CLASS, yytext()); }
+"Program"    { return symbol(sym.PROGRAM, yytext()); }  // Coloca esta línea antes de la definición de ID
 "if"         { return symbol(sym.IF, yytext()); }
 "else"       { return symbol(sym.ELSE, yytext()); }
 "while"      { return symbol(sym.WHILE, yytext()); }
@@ -63,8 +66,13 @@ STRINGLITERAL = \"([^\"]*)\"
 "&&"         { return symbol(sym.AND, yytext()); }
 "||"         { return symbol(sym.OR, yytext()); }
 
-// Ignorar espacios en blanco y comentarios
-[ \t\r\n\f]  { /* Ignorar espacios en blanco */ }
+// Ignorar espacios en blanco
+[\t\r\f]     { /* Ignorar espacios en blanco, pero no saltos de línea */ }
+
+// Manejar saltos de línea (incrementar el número de línea)
+\n           { yyline++; }
+
+// Ignorar comentarios
 "//".*       { /* Ignorar comentarios de una línea */ }
 "/*"[^*]*"*/"  { /* Ignorar comentarios de múltiples líneas */ }
 

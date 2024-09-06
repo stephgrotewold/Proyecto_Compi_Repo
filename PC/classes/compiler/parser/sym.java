@@ -40,12 +40,13 @@ public interface sym {
   public static final int BOOL = 30;
   public static final int NEW = 31;
   public static final int THIS = 32;
+  public static final int PROGRAM = 33;
 
   public static final String[] terminalNames = new String[] {
     "EOF", "error", "ID", "CLASS", "INT", "STRING", "INTLITERAL", 
     "STRINGLITERAL", "SEMICOLON", "ASSIGN", "PLUS", "MINUS", "TIMES", 
     "DIVIDE", "LPAREN", "RPAREN", "LBRACE", "RBRACE", "IF", "ELSE", 
     "WHILE", "RETURN", "LT", "GT", "AND", "OR", "NOT", "TRUE", "FALSE", 
-    "VOID", "BOOL", "NEW", "THIS"
+    "VOID", "BOOL", "NEW", "THIS", "PROGRAM"
   };
 }

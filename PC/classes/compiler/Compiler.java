@@ -1,7 +1,7 @@
 package compiler;
 
 import compiler.scanner.Scanner;
-import compiler.parser.sym;  // Importar la clase sym generada por CUP
+import compiler.parser.sym;
 import java.io.FileReader;
 import java.io.IOException;
 import java_cup.runtime.Symbol;
@@ -49,7 +49,8 @@ public class Compiler {
 
                 // Recorre los tokens generados por el scanner
                 while ((token = scanner.next_token()) != null) {
-                    System.out.println("Token: " + sym.terminalNames[token.sym] + ", Value: " + token.value);
+                    // Imprime el token, su línea y columna
+                    System.out.println("(línea: " + (token.left + 1) + ", columna: " + (token.right + 1) + ", token: " + sym.terminalNames[token.sym] + ")");
                     
                     // Para detener al final del archivo (EOF)
                     if (token.sym == sym.EOF) {
