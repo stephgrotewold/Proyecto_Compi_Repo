@@ -43,13 +43,13 @@ parser code {:
 :};
 
 /* Terminals (tokens returned by the lexer) */
-terminal CLASS, INT, VOID, BOOLEAN, TRUE, FALSE, IF, RETURN, PROGRAM;
+terminal CLASS, INT, VOID, BOOLEAN, TRUE, FALSE, IF, RETURN;
 terminal ASSIGN, EQ, SEMI, LBRACE, RBRACE, LPAREN, RPAREN, PLUS, MINUS, COMMA;
-terminal String ID;
+terminal String ID, PROGRAM_ID;
 terminal Integer INT_LITERAL;
 
 /* Non-terminals */
-non terminal Object program, class_decl, method_decl, var_decl, type;
+non terminal Object program, class_decl, class_name, method_decl, var_decl, type;
 non terminal Object statement, expr, param_list, statement_list, arg_list;
 non terminal Object class_body_member_list, class_body_member, field_decl, block;
 non terminal Object block_item_list, block_item, decl, id_list, assignment;
@@ -63,10 +63,12 @@ precedence left PLUS, MINUS;
 /* The grammar rules */
 start with program;
 
-program ::= PROGRAM CLASS ID:name LBRACE class_body_member_list RBRACE
-          | class_decl; // Agregar la regla alternativa
+program ::= class_decl; // Agregar la regla alternativa
 
-class_decl ::= CLASS ID:name LBRACE class_body_member_list RBRACE;
+class_decl ::= CLASS class_name:name LBRACE class_body_member_list RBRACE;
+
+class_name ::= PROGRAM_ID:name
+            | ID:name;
 
 class_body_member_list ::= class_body_member_list class_body_member
                          | /* empty */;

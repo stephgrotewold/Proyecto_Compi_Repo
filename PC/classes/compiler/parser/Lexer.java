@@ -871,7 +871,7 @@ public class Lexer implements java_cup.runtime.Scanner {
           // fall through
           case 48: break;
           case 24:
-            { return new Symbol(sym.PROGRAM, yyline + 1, yycolumn + 1, yytext());
+            { return new Symbol(sym.PROGRAM_ID, yyline + 1, yycolumn + 1, yytext());
             }
           // fall through
           case 49: break;

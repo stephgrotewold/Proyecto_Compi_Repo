@@ -9,27 +9,27 @@ package compiler.parser;
 public class sym {
   /* terminals */
   public static final int CLASS = 2;
-  public static final int PLUS = 18;
-  public static final int RPAREN = 17;
-  public static final int RBRACE = 15;
+  public static final int PLUS = 17;
+  public static final int RBRACE = 14;
+  public static final int RPAREN = 16;
   public static final int INT = 3;
-  public static final int SEMI = 13;
+  public static final int SEMI = 12;
   public static final int RETURN = 9;
   public static final int TRUE = 6;
   public static final int IF = 8;
-  public static final int LPAREN = 16;
-  public static final int LBRACE = 14;
-  public static final int ID = 21;
-  public static final int PROGRAM = 10;
+  public static final int LPAREN = 15;
+  public static final int LBRACE = 13;
+  public static final int ID = 20;
   public static final int INT_LITERAL = 22;
+  public static final int PROGRAM_ID = 21;
   public static final int BOOLEAN = 5;
-  public static final int COMMA = 20;
+  public static final int COMMA = 19;
   public static final int EOF = 0;
-  public static final int MINUS = 19;
+  public static final int MINUS = 18;
   public static final int FALSE = 7;
   public static final int error = 1;
-  public static final int ASSIGN = 11;
-  public static final int EQ = 12;
+  public static final int ASSIGN = 10;
+  public static final int EQ = 11;
   public static final int VOID = 4;
   public static final String[] terminalNames = new String[] {
   "EOF",
@@ -42,7 +42,6 @@ public class sym {
   "FALSE",
   "IF",
   "RETURN",
-  "PROGRAM",
   "ASSIGN",
   "EQ",
   "SEMI",
@@ -54,6 +53,7 @@ public class sym {
   "MINUS",
   "COMMA",
   "ID",
+  "PROGRAM_ID",
   "INT_LITERAL"
   };
 }

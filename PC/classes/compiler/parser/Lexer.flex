@@ -26,7 +26,6 @@ import compiler.parser.sym;
 %%
 
 // Palabras clave
-"Program"    { return new Symbol(sym.PROGRAM, yyline + 1, yycolumn + 1, yytext()); }
 "class"      { return new Symbol(sym.CLASS, yyline + 1, yycolumn + 1, yytext()); }
 "int"        { return new Symbol(sym.INT, yyline + 1, yycolumn + 1, yytext()); }
 "void"       { return new Symbol(sym.VOID, yyline + 1, yycolumn + 1, yytext()); }
@@ -54,7 +53,9 @@ import compiler.parser.sym;
 [0-9]+       { return new Symbol(sym.INT_LITERAL, yyline + 1, yycolumn + 1, Integer.parseInt(yytext())); }
 
 // Identificadores
+"Program"    { return new Symbol(sym.PROGRAM_ID, yyline + 1, yycolumn + 1, yytext()); }
 [a-zA-Z_][a-zA-Z0-9_]* { return new Symbol(sym.ID, yyline + 1, yycolumn + 1, yytext()); }
+
 
 // Saltos de línea y espacios en blanco
 \n           { yyline++; yycolumn = 0; }

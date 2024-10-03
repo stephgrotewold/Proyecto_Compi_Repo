@@ -1,4 +1,4 @@
-class test {
+class Program {
     int x;
     int y;
 
