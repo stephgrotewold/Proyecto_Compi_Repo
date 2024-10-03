@@ -1,55 +1,123 @@
-// Definición de paquetes y código importado
-package compiler.scanner;
+package compiler.parser;
+import compiler.parser.lexer.Lexer;
 
 import java_cup.runtime.Symbol;
+import java_cup.runtime.*;
 
-// Definición de terminales (tokens)
-terminal INTLITERAL, ID, PLUS, MINUS, TIMES, DIVIDE, LPAREN, RPAREN;
+import java.io.FileReader;
+import java.io.IOException;
 
-// Definición de no terminales
-non terminal Expr expr;
-non terminal Term term;
-non terminal Factor factor;
+parser code {:
+    private Lexer lexer;
 
-// Precedencia de operadores
+    public Parser(Lexer lexer) {
+        super();
+        this.lexer = lexer;
+    }
+
+    public Symbol parse(String filename) throws Exception {
+        try {
+            lexer = new Lexer(new FileReader(filename));
+            return this.parse();
+        } catch (IOException e) {
+            throw new RuntimeException("Error al leer el archivo: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Symbol scan() throws Exception {
+        return lexer.next_token();
+    }
+
+    public void syntax_error(Symbol s) {
+        String tokenName = sym.terminalNames[s.sym];
+        String tokenValue = s.value == null ? "" : s.value.toString();
+        String errorMessage = String.format(
+            "Error Sintáctico en la Línea %d, Columna %d: Token '%s' no reconocido. Tipo: %s",
+            s.right + 1, s.left + 1, tokenValue, tokenName
+        );
+
+        // Imprimir en la consola sin escribir en output.txt
+        System.err.println(errorMessage);
+    }
+:};
+
+/* Terminals (tokens returned by the lexer) */
+terminal CLASS, INT, VOID, BOOLEAN, TRUE, FALSE, IF, RETURN, PROGRAM;
+terminal ASSIGN, EQ, SEMI, LBRACE, RBRACE, LPAREN, RPAREN, PLUS, MINUS, COMMA;
+terminal String ID;
+terminal Integer INT_LITERAL;
+
+/* Non-terminals */
+non terminal Object program, class_decl, method_decl, var_decl, type;
+non terminal Object statement, expr, param_list, statement_list, arg_list;
+non terminal Object class_body_member_list, class_body_member, field_decl, block;
+non terminal Object block_item_list, block_item, decl, id_list, assignment;
+non terminal Object arg_list_non_empty;
+
+/* Precedences */
+precedence left EQ;
+precedence right ASSIGN;
 precedence left PLUS, MINUS;
-precedence left TIMES, DIVIDE;
 
-start with expr;
+/* The grammar rules */
+start with program;
 
-////////////////////////////////////////////////////////////////////////////
-// Producciones de la gramática
-////////////////////////////////////////////////////////////////////////////
+program ::= PROGRAM CLASS ID:name LBRACE class_body_member_list RBRACE
+          | class_decl; // Agregar la regla alternativa
 
-expr ::=
-    expr:e1 PLUS term:e2
-    {: RESULT = new Integer(((Integer)e1.value).intValue() + ((Integer)e2.value).intValue()); :}
-    |
-    expr:e1 MINUS term:e2
-    {: RESULT = new Integer(((Integer)e1.value).intValue() - ((Integer)e2.value).intValue()); :}
-    |
-    term:t
-    {: RESULT = t.value; :}
-    ;
+class_decl ::= CLASS ID:name LBRACE class_body_member_list RBRACE;
 
-term ::=
-    term:t TIMES factor:f
-    {: RESULT = new Integer(((Integer)t.value).intValue() * ((Integer)f.value).intValue()); :}
-    |
-    term:t DIVIDE factor:f
-    {: RESULT = new Integer(((Integer)t.value).intValue() / ((Integer)f.value).intValue()); :}
-    |
-    factor:f
-    {: RESULT = f.value; :}
-    ;
+class_body_member_list ::= class_body_member_list class_body_member
+                         | /* empty */;
 
-factor ::=
-    LPAREN expr:e RPAREN
-    {: RESULT = e.value; :}
-    |
-    INTLITERAL:i
-    {: RESULT = new Integer(i.intValue()); :}
-    |
-    ID:i
-    {: RESULT = i.value; :}
-    ;
+class_body_member ::= field_decl
+                    | method_decl;
+
+field_decl ::= type id_list SEMI;
+
+method_decl ::= type ID:name LPAREN param_list RPAREN block;
+
+param_list ::= param_list COMMA type ID:name
+             | type ID:name
+             | /* empty */;
+
+block ::= LBRACE block_item_list RBRACE;
+
+block_item_list ::= block_item_list block_item
+                  | /* empty */;
+
+block_item ::= decl
+             | statement;
+
+decl ::= type id_list SEMI;
+
+id_list ::= id_list COMMA ID:name
+          | ID:name;
+
+statement ::= assignment SEMI
+            | IF LPAREN expr RPAREN block
+            | RETURN expr SEMI
+            | block;
+
+assignment ::= ID:name ASSIGN expr;
+
+expr ::= expr:e1 PLUS expr:e2
+       | expr:e1 MINUS expr:e2
+       | expr:e1 EQ expr:e2
+       | ID:name
+       | INT_LITERAL:value
+       | ID:name LPAREN arg_list RPAREN
+       | TRUE
+       | FALSE
+       | LPAREN expr:e RPAREN;
+
+arg_list ::= arg_list_non_empty
+           | /* empty */;
+
+arg_list_non_empty ::= arg_list_non_empty COMMA expr
+                     | expr;
+
+type ::= INT
+       | VOID
+       | BOOLEAN;

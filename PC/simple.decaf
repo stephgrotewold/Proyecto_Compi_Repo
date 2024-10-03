@@ -1,0 +1,9 @@
+class Prueba {
+    int a; 
+    void method(int x) {
+        a = x + 10
+        if (true) {
+            return true;
+        }
+    }
+}

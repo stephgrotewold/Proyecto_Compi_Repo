@@ -1,7 +1,8 @@
 package compiler;
 
-import compiler.scanner.Scanner;
+import compiler.parser.Lexer; // Cambiado a Lexer
 import compiler.parser.sym;
+import compiler.parser.Parser;
 import java.io.FileReader;
 import java.io.IOException;
 import java_cup.runtime.Symbol;
@@ -40,19 +41,16 @@ public class Compiler {
         try (FileReader fileReader = new FileReader(inputFile)) {
             System.out.println("Compiling " + inputFile + " to stage: " + targetStage);
 
-            // Dependiendo de la etapa solicitada, llama a las clases necesarias
             if (targetStage.equals("scan")) {
-                Scanner scanner = new Scanner(fileReader);
+                Lexer lexer = new Lexer(fileReader); // Usar el lexer en lugar del scanner
                 Symbol token;
-                
+
                 System.out.println("Starting lexical analysis (scanning)...");
 
-                // Recorre los tokens generados por el scanner
-                while ((token = scanner.next_token()) != null) {
-                    // Imprime el token, su línea y columna
+                // Recorre los tokens generados por el lexer
+                while ((token = lexer.next_token()) != null) {
                     System.out.println("(línea: " + (token.left + 1) + ", columna: " + (token.right + 1) + ", token: " + sym.terminalNames[token.sym] + ")");
                     
-                    // Para detener al final del archivo (EOF)
                     if (token.sym == sym.EOF) {
                         System.out.println("End of file reached.");
                         break;
@@ -62,13 +60,29 @@ public class Compiler {
                 System.out.println("Lexical analysis (scanning) completed.");
 
             } else if (targetStage.equals("parse")) {
-                // Ejecuta la fase de parsing (a completar)
+                Lexer lexer = new Lexer(fileReader); // Usa tu lexer
+                Parser parser = new Parser(lexer);  // Instancia el parser con el lexer
+                System.out.println("Starting parsing...");
+
+                // Agregar un print para el archivo que se está analizando
+                System.out.println("Parsing input from: " + inputFile);
+                
+                Symbol parseResult = parser.parse(inputFile); // Llama al método parse()
+
+                // Imprime el resultado del parseo
+                System.out.println("Resultado del parseo: " + parseResult);
+                
+                // Aquí puedes agregar más prints según el resultado del parseo.
+                System.out.println("Parsing completed successfully.");
+
             } else if (targetStage.equals("ast")) {
-                // Ejecuta la fase de AST (a completar)
+                // Implementar la fase AST si es necesario
             }
-            // Continúa con las otras fases según sea necesario
         } catch (IOException e) {
             System.out.println("File not found: " + inputFile);
+        } catch (Exception e) {
+            System.out.println("Error during parsing: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
