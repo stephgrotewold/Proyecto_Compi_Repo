@@ -1,7 +1,10 @@
-class Prueba {
-    int a; 
-    void method(int x) {
-        a = x + 10
+class test {
+    int x;
+    int y;
+
+    void sum(int z) {
+        x = y + z;
+
         if (true) {
             return true;
         }
