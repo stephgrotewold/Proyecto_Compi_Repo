@@ -8,53 +8,97 @@ package compiler.parser;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
+  public static final int DIVIDE = 24;
+  public static final int STRING_LITERAL = 44;
+  public static final int LTE = 28;
+  public static final int LBRACKET = 15;
+  public static final int CHAR_LITERAL = 43;
+  public static final int PLUS_ASSIGN = 11;
+  public static final int LPAREN = 17;
+  public static final int SEMI = 13;
+  public static final int CONTINUE = 9;
+  public static final int INT = 36;
+  public static final int FOR = 6;
+  public static final int MINUS = 22;
+  public static final int RPAREN = 18;
+  public static final int NOT = 34;
+  public static final int AND = 32;
+  public static final int LT = 26;
+  public static final int CALLOUT = 35;
+  public static final int OR = 33;
+  public static final int COMMA = 14;
   public static final int CLASS = 2;
-  public static final int PLUS = 17;
-  public static final int RBRACE = 14;
-  public static final int RPAREN = 16;
-  public static final int INT = 3;
-  public static final int SEMI = 12;
-  public static final int RETURN = 9;
-  public static final int TRUE = 6;
-  public static final int IF = 8;
-  public static final int LPAREN = 15;
-  public static final int LBRACE = 13;
-  public static final int ID = 20;
-  public static final int INT_LITERAL = 22;
-  public static final int PROGRAM_ID = 21;
-  public static final int BOOLEAN = 5;
-  public static final int COMMA = 19;
-  public static final int EOF = 0;
-  public static final int MINUS = 18;
-  public static final int FALSE = 7;
-  public static final int error = 1;
+  public static final int PLUS = 21;
   public static final int ASSIGN = 10;
-  public static final int EQ = 11;
-  public static final int VOID = 4;
+  public static final int IF = 4;
+  public static final int ID = 40;
+  public static final int BOOLEAN = 37;
+  public static final int EOF = 0;
+  public static final int RETURN = 7;
+  public static final int PROGRAM_ID = 41;
+  public static final int RBRACKET = 16;
+  public static final int TRUE = 38;
+  public static final int error = 1;
+  public static final int LCURLY = 19;
+  public static final int MOD = 25;
+  public static final int NEQ = 31;
+  public static final int BREAK = 8;
+  public static final int VOID = 3;
+  public static final int EQ = 30;
+  public static final int GTE = 29;
+  public static final int RCURLY = 20;
+  public static final int TIMES = 23;
+  public static final int ELSE = 5;
+  public static final int FALSE = 39;
+  public static final int GT = 27;
+  public static final int MINUS_ASSIGN = 12;
+  public static final int INT_LITERAL = 42;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
   "CLASS",
-  "INT",
   "VOID",
+  "IF",
+  "ELSE",
+  "FOR",
+  "RETURN",
+  "BREAK",
+  "CONTINUE",
+  "ASSIGN",
+  "PLUS_ASSIGN",
+  "MINUS_ASSIGN",
+  "SEMI",
+  "COMMA",
+  "LBRACKET",
+  "RBRACKET",
+  "LPAREN",
+  "RPAREN",
+  "LCURLY",
+  "RCURLY",
+  "PLUS",
+  "MINUS",
+  "TIMES",
+  "DIVIDE",
+  "MOD",
+  "LT",
+  "GT",
+  "LTE",
+  "GTE",
+  "EQ",
+  "NEQ",
+  "AND",
+  "OR",
+  "NOT",
+  "CALLOUT",
+  "INT",
   "BOOLEAN",
   "TRUE",
   "FALSE",
-  "IF",
-  "RETURN",
-  "ASSIGN",
-  "EQ",
-  "SEMI",
-  "LBRACE",
-  "RBRACE",
-  "LPAREN",
-  "RPAREN",
-  "PLUS",
-  "MINUS",
-  "COMMA",
   "ID",
   "PROGRAM_ID",
-  "INT_LITERAL"
+  "INT_LITERAL",
+  "CHAR_LITERAL",
+  "STRING_LITERAL"
   };
 }
 

@@ -23,8 +23,11 @@ all: lexer parser compile
 lexer:
 	$(JAVA) -cp "$(JFLEX_JAR):$(CUP_RUNTIME_JAR)" jflex.Main $(PARSER_DIR)/Lexer.flex
 
-parser:
-	$(JAVA) -jar $(CUP_JAR) -parser Parser -symbols sym $(PARSER_DIR)/Parser.cup
+parser: | $(PARSER_DIR)
+	$(JAVA) -jar $(CUP_JAR) -parser Parser -symbols sym -destdir $(PARSER_DIR) $(PARSER_DIR)/Parser.cup
+
+$(PARSER_DIR):
+	mkdir -p $(PARSER_DIR)
 
 compile:
 	$(JAVAC) -cp "$(CUP_RUNTIME_JAR):." -d $(CLASSES_DIR) $(CLASSES_DIR)/compiler/*.java $(PARSER_DIR)/*.java

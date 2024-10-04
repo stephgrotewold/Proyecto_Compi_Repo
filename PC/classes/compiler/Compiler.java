@@ -42,23 +42,29 @@ public class Compiler {
             System.out.println("Compiling " + inputFile + " to stage: " + targetStage);
 
             if (targetStage.equals("scan")) {
-                Lexer lexer = new Lexer(fileReader); // Usar el lexer en lugar del scanner
-                Symbol token;
-
-                System.out.println("Starting lexical analysis (scanning)...");
-
-                // Recorre los tokens generados por el lexer
-                while ((token = lexer.next_token()) != null) {
-                    System.out.println("(línea: " + (token.left + 1) + ", columna: " + (token.right + 1) + ", token: " + sym.terminalNames[token.sym] + ")");
-                    
-                    if (token.sym == sym.EOF) {
-                        System.out.println("End of file reached.");
-                        break;
+                try {
+                    Lexer lexer = new Lexer(fileReader);
+                    Symbol token;
+            
+                    System.out.println("Starting lexical analysis (scanning)...");
+            
+                    while ((token = lexer.next_token()) != null) {
+                        String tokenValue = token.value != null ? ", value: " + token.value : "";
+                        System.out.printf("(línea: %d, columna: %d, token: %s%s)\n", 
+                            token.left, token.right, 
+                            sym.terminalNames[token.sym], tokenValue);
+                        
+                        if (token.sym == sym.EOF) {
+                            System.out.println("End of file reached.");
+                            break;
+                        }
                     }
+            
+                    System.out.println("Lexical analysis (scanning) completed.");
+                } catch (Exception e) {
+                    System.err.println("Error during lexical analysis: " + e.getMessage());
+                    e.printStackTrace();
                 }
-
-                System.out.println("Lexical analysis (scanning) completed.");
-
             } else if (targetStage.equals("parse")) {
                 Lexer lexer = new Lexer(fileReader); // Usa tu lexer
                 Parser parser = new Parser(lexer);  // Instancia el parser con el lexer

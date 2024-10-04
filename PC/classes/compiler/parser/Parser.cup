@@ -1,5 +1,5 @@
 package compiler.parser;
-import compiler.parser.lexer.Lexer;
+import compiler.parser.Lexer;
 
 import java_cup.runtime.Symbol;
 import java_cup.runtime.*;
@@ -37,89 +37,143 @@ parser code {:
             s.right + 1, s.left + 1, tokenValue, tokenName
         );
 
-        // Imprimir en la consola sin escribir en output.txt
         System.err.println(errorMessage);
     }
 :};
 
-/* Terminals (tokens returned by the lexer) */
-terminal CLASS, INT, VOID, BOOLEAN, TRUE, FALSE, IF, RETURN;
-terminal ASSIGN, EQ, SEMI, LBRACE, RBRACE, LPAREN, RPAREN, PLUS, MINUS, COMMA;
+terminal CLASS, VOID;
+terminal IF, ELSE, FOR, RETURN, BREAK, CONTINUE;
+terminal ASSIGN, PLUS_ASSIGN, MINUS_ASSIGN;
+terminal SEMI, COMMA, LBRACKET, RBRACKET, LPAREN, RPAREN, LCURLY, RCURLY;
+terminal PLUS, MINUS, TIMES, DIVIDE, MOD;
+terminal LT, GT, LTE, GTE, EQ, NEQ;
+terminal AND, OR, NOT;
+terminal CALLOUT;
+terminal INT, BOOLEAN;
+terminal TRUE, FALSE;
 terminal String ID, PROGRAM_ID;
 terminal Integer INT_LITERAL;
+terminal Character CHAR_LITERAL;
+terminal String STRING_LITERAL;
 
 /* Non-terminals */
-non terminal Object program, class_decl, class_name, method_decl, var_decl, type;
-non terminal Object statement, expr, param_list, statement_list, arg_list;
-non terminal Object class_body_member_list, class_body_member, field_decl, block;
-non terminal Object block_item_list, block_item, decl, id_list, assignment;
-non terminal Object arg_list_non_empty;
+non terminal program;
+non terminal field_decl_list, field_decl, field_list, field;
+non terminal method_decl_list, method_decl;
+non terminal block, var_decl_list, var_decl;
+non terminal type, statement_list, statement;
+non terminal assign_op, method_call, method_name;
+non terminal location, expr, callout_arg_list, callout_arg;
+non terminal bin_op, arith_op, rel_op, eq_op, cond_op;
+non terminal literal, bool_literal, id_list, param_list;
 
 /* Precedences */
-precedence left EQ;
-precedence right ASSIGN;
+precedence left OR;
+precedence left AND;
+precedence left EQ, NEQ;
+precedence left LT, GT, LTE, GTE;
 precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE, MOD;
+precedence left INT, BOOLEAN;
+precedence right NOT;
 
 /* The grammar rules */
 start with program;
 
-program ::= class_decl; // Agregar la regla alternativa
+program ::= CLASS ID:name LCURLY field_decl_list method_decl_list RCURLY
+          | CLASS PROGRAM_ID:name LCURLY field_decl_list method_decl_list RCURLY;
 
-class_decl ::= CLASS class_name:name LBRACE class_body_member_list RBRACE;
-
-class_name ::= PROGRAM_ID:name
-            | ID:name;
-
-class_body_member_list ::= class_body_member_list class_body_member
-                         | /* empty */;
-
-class_body_member ::= field_decl
-                    | method_decl;
-
-field_decl ::= type id_list SEMI;
-
-method_decl ::= type ID:name LPAREN param_list RPAREN block;
-
-param_list ::= param_list COMMA type ID:name
-             | type ID:name
-             | /* empty */;
-
-block ::= LBRACE block_item_list RBRACE;
-
-block_item_list ::= block_item_list block_item
+field_decl_list ::= field_decl_list field_decl
                   | /* empty */;
 
-block_item ::= decl
-             | statement;
+field_decl ::= type field_list SEMI;
 
-decl ::= type id_list SEMI;
+field_list ::= field_list COMMA field
+             | field;
 
-id_list ::= id_list COMMA ID:name
-          | ID:name;
+field ::= ID
+        | ID LBRACKET INT_LITERAL RBRACKET;
 
-statement ::= assignment SEMI
-            | IF LPAREN expr RPAREN block
-            | RETURN expr SEMI
-            | block;
+method_decl_list ::= method_decl_list method_decl
+                   | /* empty */;
 
-assignment ::= ID:name ASSIGN expr;
+method_decl ::= type ID LPAREN param_list RPAREN block
+              | VOID ID LPAREN param_list RPAREN block;
 
-expr ::= expr:e1 PLUS expr:e2
-       | expr:e1 MINUS expr:e2
-       | expr:e1 EQ expr:e2
-       | ID:name
-       | INT_LITERAL:value
-       | ID:name LPAREN arg_list RPAREN
-       | TRUE
-       | FALSE
-       | LPAREN expr:e RPAREN;
+param_list ::= type ID
+             | param_list COMMA type ID
+             | /* empty */;
 
-arg_list ::= arg_list_non_empty
-           | /* empty */;
+block ::= LCURLY var_decl_list statement_list RCURLY;
 
-arg_list_non_empty ::= arg_list_non_empty COMMA expr
-                     | expr;
+var_decl_list ::= var_decl_list var_decl
+                | /* empty */;
+
+var_decl ::= type id_list SEMI;
+
+id_list ::= id_list COMMA ID
+          | ID;
 
 type ::= INT
-       | VOID
        | BOOLEAN;
+
+statement_list ::= statement_list statement
+                 | /* empty */;
+
+statement ::= location assign_op expr SEMI
+            | method_call SEMI
+            | IF LPAREN expr RPAREN block ELSE block
+            | IF LPAREN expr RPAREN block
+            | FOR ID ASSIGN expr COMMA expr block
+            | RETURN expr SEMI
+            | RETURN SEMI
+            | BREAK SEMI
+            | CONTINUE SEMI
+            | block;
+
+assign_op ::= ASSIGN
+            | PLUS_ASSIGN
+            | MINUS_ASSIGN;
+
+method_call ::= method_name LPAREN RPAREN
+              | method_name LPAREN expr RPAREN
+              | method_name LPAREN expr COMMA expr RPAREN
+              | CALLOUT LPAREN STRING_LITERAL COMMA callout_arg_list RPAREN;
+
+method_name ::= ID;
+
+location ::= ID
+           | ID LBRACKET expr RBRACKET;
+
+expr ::= location
+       | method_call
+       | literal
+       | expr bin_op expr
+       | MINUS expr
+       | NOT expr
+       | LPAREN expr RPAREN;
+
+callout_arg_list ::= callout_arg_list COMMA callout_arg
+                   | callout_arg;
+
+callout_arg ::= expr
+              | STRING_LITERAL;
+
+bin_op ::= arith_op
+         | rel_op
+         | eq_op
+         | cond_op;
+
+arith_op ::= PLUS | MINUS | TIMES | DIVIDE | MOD;
+
+rel_op ::= LT | GT | LTE | GTE;
+
+eq_op ::= EQ | NEQ;
+
+cond_op ::= AND | OR;
+
+literal ::= INT_LITERAL
+          | CHAR_LITERAL
+          | bool_literal;
+
+bool_literal ::= TRUE | FALSE;
