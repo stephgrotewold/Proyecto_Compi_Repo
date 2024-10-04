@@ -420,15 +420,15 @@ public class Parser extends java_cup.runtime.lr_parser {
     }
 
     public void syntax_error(Symbol s) {
-        String tokenName = sym.terminalNames[s.sym];
-        String tokenValue = s.value == null ? "" : s.value.toString();
-        String errorMessage = String.format(
-            "Error Sintáctico en la Línea %d, Columna %d: Token '%s' no reconocido. Tipo: %s",
-            s.right + 1, s.left + 1, tokenValue, tokenName
-        );
+    String tokenName = sym.terminalNames[s.sym];
+    String tokenValue = s.value == null ? "" : s.value.toString();
+    String errorMessage = String.format(
+        "Error Sintáctico en la Línea %d, Columna %d: Token '%s' no reconocido. Tipo: %s",
+        s.left, s.right, tokenValue, tokenName
+    );
 
-        System.err.println(errorMessage);
-    }
+    System.err.println(errorMessage);
+}
 
 
 /** Cup generated class to encapsulate user supplied action code.*/

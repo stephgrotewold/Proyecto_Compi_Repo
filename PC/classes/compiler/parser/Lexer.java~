@@ -373,11 +373,11 @@ public class Lexer implements java_cup.runtime.Scanner {
 
   /* user code: */
   private Symbol symbol(int type) {
-    return new Symbol(type, yyline+1, yycolumn+1);
+    return new Symbol(type, yyline + 1, yycolumn + 1);
   }
 
   private Symbol symbol(int type, Object value) {
-    return new Symbol(type, yyline+1, yycolumn+1, value);
+    return new Symbol(type, yyline + 1, yycolumn + 1, value);
   }
 
   public void printToken(Symbol token) {
@@ -806,7 +806,7 @@ public class Lexer implements java_cup.runtime.Scanner {
         zzAtEOF = true;
             zzDoEOF();
               {
-                Symbol s = symbol(sym.EOF); printToken(s); return s;
+                return symbol(sym.EOF);
               }
       }
       else {
@@ -822,122 +822,122 @@ public class Lexer implements java_cup.runtime.Scanner {
           // fall through
           case 51: break;
           case 3:
-            { Symbol s = symbol(sym.NOT, yytext()); printToken(s); return s;
+            { return symbol(sym.NOT, yytext());
             }
           // fall through
           case 52: break;
           case 4:
-            { Symbol s = symbol(sym.MOD, yytext()); printToken(s); return s;
+            { return symbol(sym.MOD, yytext());
             }
           // fall through
           case 53: break;
           case 5:
-            { Symbol s = symbol(sym.LPAREN, yytext()); printToken(s); return s;
+            { return symbol(sym.LPAREN, yytext());
             }
           // fall through
           case 54: break;
           case 6:
-            { Symbol s = symbol(sym.RPAREN, yytext()); printToken(s); return s;
+            { return symbol(sym.RPAREN, yytext());
             }
           // fall through
           case 55: break;
           case 7:
-            { Symbol s = symbol(sym.TIMES, yytext()); printToken(s); return s;
+            { return symbol(sym.TIMES, yytext());
             }
           // fall through
           case 56: break;
           case 8:
-            { Symbol s = symbol(sym.PLUS, yytext()); printToken(s); return s;
+            { return symbol(sym.PLUS, yytext());
             }
           // fall through
           case 57: break;
           case 9:
-            { Symbol s = symbol(sym.COMMA, yytext()); printToken(s); return s;
+            { return symbol(sym.COMMA, yytext());
             }
           // fall through
           case 58: break;
           case 10:
-            { Symbol s = symbol(sym.MINUS, yytext()); printToken(s); return s;
+            { return symbol(sym.MINUS, yytext());
             }
           // fall through
           case 59: break;
           case 11:
-            { Symbol s = symbol(sym.DIVIDE, yytext()); printToken(s); return s;
+            { return symbol(sym.DIVIDE, yytext());
             }
           // fall through
           case 60: break;
           case 12:
-            { Symbol s = symbol(sym.INT_LITERAL, Integer.parseInt(yytext())); printToken(s); return s;
+            { return symbol(sym.INT_LITERAL, Integer.parseInt(yytext()));
             }
           // fall through
           case 61: break;
           case 13:
-            { Symbol s = symbol(sym.SEMI, yytext()); printToken(s); return s;
+            { return symbol(sym.SEMI, yytext());
             }
           // fall through
           case 62: break;
           case 14:
-            { Symbol s = symbol(sym.LT, yytext()); printToken(s); return s;
+            { return symbol(sym.LT, yytext());
             }
           // fall through
           case 63: break;
           case 15:
-            { Symbol s = symbol(sym.ASSIGN, yytext()); printToken(s); return s;
+            { return symbol(sym.ASSIGN, yytext());
             }
           // fall through
           case 64: break;
           case 16:
-            { Symbol s = symbol(sym.GT, yytext()); printToken(s); return s;
+            { return symbol(sym.GT, yytext());
             }
           // fall through
           case 65: break;
           case 17:
-            { Symbol s = symbol(sym.ID, yytext()); printToken(s); return s;
+            { return symbol(sym.ID, yytext());
             }
           // fall through
           case 66: break;
           case 18:
-            { Symbol s = symbol(sym.LBRACKET, yytext()); printToken(s); return s;
+            { return symbol(sym.LBRACKET, yytext());
             }
           // fall through
           case 67: break;
           case 19:
-            { Symbol s = symbol(sym.RBRACKET, yytext()); printToken(s); return s;
+            { return symbol(sym.RBRACKET, yytext());
             }
           // fall through
           case 68: break;
           case 20:
-            { Symbol s = symbol(sym.LCURLY, yytext()); printToken(s); return s;
+            { return symbol(sym.LCURLY, yytext());
             }
           // fall through
           case 69: break;
           case 21:
-            { Symbol s = symbol(sym.RCURLY, yytext()); printToken(s); return s;
+            { return symbol(sym.RCURLY, yytext());
             }
           // fall through
           case 70: break;
           case 22:
-            { Symbol s = symbol(sym.NEQ, yytext()); printToken(s); return s;
+            { return symbol(sym.NEQ, yytext());
             }
           // fall through
           case 71: break;
           case 23:
-            { Symbol s = symbol(sym.STRING_LITERAL, yytext().substring(1, yytext().length() - 1)); printToken(s); return s;
+            { return symbol(sym.STRING_LITERAL, yytext().substring(1, yytext().length() - 1));
             }
           // fall through
           case 72: break;
           case 24:
-            { Symbol s = symbol(sym.AND, yytext()); printToken(s); return s;
+            { return symbol(sym.AND, yytext());
             }
           // fall through
           case 73: break;
           case 25:
-            { Symbol s = symbol(sym.PLUS_ASSIGN, yytext()); printToken(s); return s;
+            { return symbol(sym.PLUS_ASSIGN, yytext());
             }
           // fall through
           case 74: break;
           case 26:
-            { Symbol s = symbol(sym.MINUS_ASSIGN, yytext()); printToken(s); return s;
+            { return symbol(sym.MINUS_ASSIGN, yytext());
             }
           // fall through
           case 75: break;
@@ -947,55 +947,55 @@ public class Lexer implements java_cup.runtime.Scanner {
           // fall through
           case 76: break;
           case 28:
-            { Symbol s = symbol(sym.LTE, yytext()); printToken(s); return s;
+            { return symbol(sym.LTE, yytext());
             }
           // fall through
           case 77: break;
           case 29:
-            { Symbol s = symbol(sym.EQ, yytext()); printToken(s); return s;
+            { return symbol(sym.EQ, yytext());
             }
           // fall through
           case 78: break;
           case 30:
-            { Symbol s = symbol(sym.GTE, yytext()); printToken(s); return s;
+            { return symbol(sym.GTE, yytext());
             }
           // fall through
           case 79: break;
           case 31:
-            { Symbol s = symbol(sym.IF, yytext()); printToken(s); return s;
+            { return symbol(sym.IF, yytext());
             }
           // fall through
           case 80: break;
           case 32:
-            { Symbol s = symbol(sym.OR, yytext()); printToken(s); return s;
+            { return symbol(sym.OR, yytext());
             }
           // fall through
           case 81: break;
           case 33:
-            { Symbol s = symbol(sym.CHAR_LITERAL, yytext().charAt(1)); printToken(s); return s;
+            { return symbol(sym.CHAR_LITERAL, yytext().charAt(1));
             }
           // fall through
           case 82: break;
           case 34:
-            { Symbol s = symbol(sym.INT_LITERAL, Integer.parseInt(yytext().substring(2), 16)); printToken(s); return s;
+            { return symbol(sym.INT_LITERAL, Integer.parseInt(yytext().substring(2), 16));
             }
           // fall through
           case 83: break;
           case 35:
-            { Symbol s = symbol(sym.FOR, yytext()); printToken(s); return s;
+            { return symbol(sym.FOR, yytext());
             }
           // fall through
           case 84: break;
           case 36:
-            { Symbol s = symbol(sym.INT, yytext()); printToken(s); return s;
+            { return symbol(sym.INT, yytext());
             }
           // fall through
           case 85: break;
           case 37:
-            { Symbol s = symbol(sym.CHAR_LITERAL, yytext().charAt(1) == 'n' ? '\n' : 
+            { return symbol(sym.CHAR_LITERAL, yytext().charAt(1) == 'n' ? '\n' : 
                                                    yytext().charAt(1) == 't' ? '\t' : 
                                                    yytext().charAt(1) == 'r' ? '\r' : 
-                                                   yytext().charAt(1)); printToken(s); return s;
+                                                   yytext().charAt(1));
             }
           // fall through
           case 86: break;
@@ -1005,57 +1005,57 @@ public class Lexer implements java_cup.runtime.Scanner {
           // fall through
           case 87: break;
           case 39:
-            { Symbol s = symbol(sym.ELSE, yytext()); printToken(s); return s;
+            { return symbol(sym.ELSE, yytext());
             }
           // fall through
           case 88: break;
           case 40:
-            { Symbol s = symbol(sym.TRUE, yytext()); printToken(s); return s;
+            { return symbol(sym.TRUE, yytext());
             }
           // fall through
           case 89: break;
           case 41:
-            { Symbol s = symbol(sym.VOID, yytext()); printToken(s); return s;
+            { return symbol(sym.VOID, yytext());
             }
           // fall through
           case 90: break;
           case 42:
-            { Symbol s = symbol(sym.BREAK, yytext()); printToken(s); return s;
+            { return symbol(sym.BREAK, yytext());
             }
           // fall through
           case 91: break;
           case 43:
-            { Symbol s = symbol(sym.CLASS, yytext()); printToken(s); return s;
+            { return symbol(sym.CLASS, yytext());
             }
           // fall through
           case 92: break;
           case 44:
-            { Symbol s = symbol(sym.FALSE, yytext()); printToken(s); return s;
+            { return symbol(sym.FALSE, yytext());
             }
           // fall through
           case 93: break;
           case 45:
-            { Symbol s = symbol(sym.RETURN, yytext()); printToken(s); return s;
+            { return symbol(sym.RETURN, yytext());
             }
           // fall through
           case 94: break;
           case 46:
-            { Symbol s = symbol(sym.PROGRAM_ID, yytext()); printToken(s); return s;
+            { return symbol(sym.PROGRAM_ID, yytext());
             }
           // fall through
           case 95: break;
           case 47:
-            { Symbol s = symbol(sym.BOOLEAN, yytext()); printToken(s); return s;
+            { return symbol(sym.BOOLEAN, yytext());
             }
           // fall through
           case 96: break;
           case 48:
-            { Symbol s = symbol(sym.CALLOUT, yytext()); printToken(s); return s;
+            { return symbol(sym.CALLOUT, yytext());
             }
           // fall through
           case 97: break;
           case 49:
-            { Symbol s = symbol(sym.CONTINUE, yytext()); printToken(s); return s;
+            { return symbol(sym.CONTINUE, yytext());
             }
           // fall through
           case 98: break;

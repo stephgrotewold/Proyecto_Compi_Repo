@@ -3,8 +3,8 @@ class Program {
     int y;
 
     void sum(int z) {
+        int w;
         x = y + z;
-
         if (true) {
             return true;
         }
