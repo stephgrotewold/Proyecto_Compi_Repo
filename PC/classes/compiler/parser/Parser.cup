@@ -1,5 +1,6 @@
 package compiler.parser;
-import compiler.parser.Lexer;
+import compiler.lexer.Lexer;
+import compiler.parser.sym;
 
 import java_cup.runtime.Symbol;
 import java_cup.runtime.*;
@@ -82,6 +83,7 @@ start with program;
 
 program ::= CLASS ID:name LCURLY field_decl_list method_decl_list RCURLY
           | CLASS PROGRAM_ID:name LCURLY field_decl_list method_decl_list RCURLY;
+          
 
 field_decl_list ::= field_decl_list field_decl
                   | /* empty */;

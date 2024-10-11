@@ -1,6 +1,6 @@
 package compiler;
 
-import compiler.parser.Lexer; // Cambiado a Lexer
+import compiler.lexer.Lexer; // Cambiado a Lexer
 import compiler.parser.sym;
 import compiler.parser.Parser;
 import java.io.FileReader;

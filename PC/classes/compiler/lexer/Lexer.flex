@@ -1,4 +1,4 @@
-package compiler.parser;
+package compiler.lexer;
 
 import java_cup.runtime.*;
 import compiler.parser.sym;

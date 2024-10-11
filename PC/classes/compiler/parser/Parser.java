@@ -5,7 +5,8 @@
 
 package compiler.parser;
 
-import compiler.parser.Lexer;
+import compiler.lexer.Lexer;
+import compiler.parser.sym;
 import java_cup.runtime.Symbol;
 import java_cup.runtime.*;
 import java.io.FileReader;
