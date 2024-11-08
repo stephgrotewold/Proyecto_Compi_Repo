@@ -1,12 +1,14 @@
 package compiler.parser;
 import compiler.lexer.Lexer;
 import compiler.parser.sym;
+import compiler.ast.*;
 
 import java_cup.runtime.Symbol;
 import java_cup.runtime.*;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 parser code {:
     private Lexer lexer;
@@ -31,15 +33,15 @@ parser code {:
     }
 
     public void syntax_error(Symbol s) {
-    String tokenName = sym.terminalNames[s.sym];
-    String tokenValue = s.value == null ? "" : s.value.toString();
-    String errorMessage = String.format(
-        "Error Sintáctico en la Línea %d, Columna %d: Token '%s' no reconocido. Tipo: %s",
-        s.left, s.right, tokenValue, tokenName
-    );
+        String tokenName = sym.terminalNames[s.sym];
+        String tokenValue = s.value == null ? "" : s.value.toString();
+        String errorMessage = String.format(
+            "Error Sintáctico en la Línea %d, Columna %d: Token '%s' no reconocido. Tipo: %s",
+            s.left, s.right, tokenValue, tokenName
+        );
 
-    System.err.println(errorMessage);
-}
+        System.err.println(errorMessage);
+    }
 :};
 
 terminal CLASS, VOID;
@@ -58,15 +60,31 @@ terminal Character CHAR_LITERAL;
 terminal String STRING_LITERAL;
 
 /* Non-terminals */
-non terminal program;
-non terminal field_decl_list, field_decl, field_list, field;
-non terminal method_decl_list, method_decl;
-non terminal block, var_decl_list, var_decl;
-non terminal type, statement_list, statement;
-non terminal assign_op, method_call, method_name;
-non terminal location, expr, callout_arg_list, callout_arg;
-non terminal bin_op, arith_op, rel_op, eq_op, cond_op;
-non terminal literal, bool_literal, id_list, param_list;
+non terminal ProgramNode program;
+non terminal ArrayList<FieldDeclNode> field_decl_list;
+non terminal FieldDeclNode field_decl;
+non terminal ArrayList<FieldNode> field_list;
+non terminal FieldNode field;
+non terminal ArrayList<MethodDeclNode> method_decl_list;
+non terminal MethodDeclNode method_decl;
+non terminal BlockNode block;
+non terminal ArrayList<VarDeclNode> var_decl_list;
+non terminal VarDeclNode var_decl;
+non terminal TypeNode type;
+non terminal ArrayList<StatementNode> statement_list;
+non terminal StatementNode statement;
+non terminal String assign_op;
+non terminal MethodCallNode method_call;
+non terminal String method_name;
+non terminal LocationNode location;
+non terminal ExprNode expr;
+non terminal ArrayList<CalloutArgNode> callout_arg_list;
+non terminal CalloutArgNode callout_arg;
+non terminal String bin_op, arith_op, rel_op, eq_op, cond_op;
+non terminal LiteralNode literal;
+non terminal BooleanLiteralNode bool_literal;
+non terminal ArrayList<String> id_list;
+non terminal ArrayList<ParamNode> param_list;
 
 /* Precedences */
 precedence left OR;
@@ -81,101 +99,172 @@ precedence right NOT;
 /* The grammar rules */
 start with program;
 
-program ::= CLASS ID:name LCURLY field_decl_list method_decl_list RCURLY
-          | CLASS PROGRAM_ID:name LCURLY field_decl_list method_decl_list RCURLY;
-          
+program ::= CLASS ID:name LCURLY field_decl_list:fields method_decl_list:methods RCURLY
+          {: RESULT = new ProgramNode(name, fields, methods); :}
+          | CLASS PROGRAM_ID:name LCURLY field_decl_list:fields method_decl_list:methods RCURLY
+          {: RESULT = new ProgramNode(name, fields, methods); :};
 
-field_decl_list ::= field_decl_list field_decl
-                  | /* empty */;
+field_decl_list ::= field_decl_list:list field_decl:decl
+                  {: list.add(decl); RESULT = list; :}
+                  | /* empty */
+                  {: RESULT = new ArrayList<FieldDeclNode>(); :};
 
-field_decl ::= type field_list SEMI;
+field_decl ::= type:t field_list:fields SEMI
+             {: RESULT = new FieldDeclNode(t, fields); :};
 
-field_list ::= field_list COMMA field
-             | field;
+field_list ::= field_list:list COMMA field:f
+             {: list.add(f); RESULT = list; :}
+             | field:f
+             {: RESULT = new ArrayList<FieldNode>(); RESULT.add(f); :};
 
-field ::= ID
-        | ID LBRACKET INT_LITERAL RBRACKET;
+field ::= ID:name
+        {: RESULT = new FieldNode(name); :}
+        | ID:name LBRACKET INT_LITERAL:size RBRACKET
+        {: RESULT = new ArrayFieldNode(name, size); :};
 
-method_decl_list ::= method_decl_list method_decl
-                   | /* empty */;
+method_decl_list ::= method_decl_list:list method_decl:decl
+                   {: list.add(decl); RESULT = list; :}
+                   | /* empty */
+                   {: RESULT = new ArrayList<MethodDeclNode>(); :};
 
-method_decl ::= type ID LPAREN param_list RPAREN block
-              | VOID ID LPAREN param_list RPAREN block;
+method_decl ::= type:t ID:name LPAREN param_list:params RPAREN block:b
+              {: RESULT = new MethodDeclNode(t, name, params, b); :}
+              | VOID ID:name LPAREN param_list:params RPAREN block:b
+              {: RESULT = new MethodDeclNode(new TypeNode("void"), name, params, b); :};
 
-param_list ::= type ID
-             | param_list COMMA type ID
-             | /* empty */;
+param_list ::= type:t ID:name
+             {: RESULT = new ArrayList<ParamNode>(); RESULT.add(new ParamNode(t, name)); :}
+             | param_list:list COMMA type:t ID:name
+             {: list.add(new ParamNode(t, name)); RESULT = list; :}
+             | /* empty */
+             {: RESULT = new ArrayList<ParamNode>(); :};
 
-block ::= LCURLY var_decl_list statement_list RCURLY;
+block ::= LCURLY var_decl_list:vars statement_list:stmts RCURLY
+        {: RESULT = new BlockNode(vars, stmts); :};
 
-var_decl_list ::= var_decl_list var_decl
-                | /* empty */;
+var_decl_list ::= var_decl_list:list var_decl:decl
+                {: list.add(decl); RESULT = list; :}
+                | /* empty */
+                {: RESULT = new ArrayList<VarDeclNode>(); :};
 
-var_decl ::= type id_list SEMI;
+var_decl ::= type:t id_list:ids SEMI
+           {: RESULT = new VarDeclNode(t, ids); :};
 
-id_list ::= id_list COMMA ID
-          | ID;
+id_list ::= id_list:list COMMA ID:name
+          {: list.add(name); RESULT = list; :}
+          | ID:name
+          {: RESULT = new ArrayList<String>(); RESULT.add(name); :};
 
 type ::= INT
-       | BOOLEAN;
+       {: RESULT = new TypeNode("int"); :}
+       | BOOLEAN
+       {: RESULT = new TypeNode("boolean"); :};
 
-statement_list ::= statement_list statement
-                 | /* empty */;
+statement_list ::= statement_list:list statement:stmt
+                 {: list.add(stmt); RESULT = list; :}
+                 | /* empty */
+                 {: RESULT = new ArrayList<StatementNode>(); :};
 
-statement ::= location assign_op expr SEMI
-            | method_call SEMI
-            | IF LPAREN expr RPAREN block ELSE block
-            | IF LPAREN expr RPAREN block
-            | FOR ID ASSIGN expr COMMA expr block
-            | RETURN expr SEMI
+statement ::= location:loc assign_op:op expr:e SEMI
+            {: RESULT = new AssignmentNode(loc, op, e); :}
+            | method_call:call SEMI
+            {: RESULT = new MethodCallStatementNode(call); :}
+            | IF LPAREN expr:cond RPAREN block:thenBlock ELSE block:elseBlock
+            {: RESULT = new IfStatementNode(cond, thenBlock, elseBlock); :}
+            | IF LPAREN expr:cond RPAREN block:thenBlock
+            {: RESULT = new IfStatementNode(cond, thenBlock, null); :}
+            | FOR ID:var ASSIGN expr:init COMMA expr:cond block:body
+            {: RESULT = new ForStatementNode(var, init, cond, body); :}
+            | RETURN expr:e SEMI
+            {: RESULT = new ReturnStatementNode(e); :}
             | RETURN SEMI
+            {: RESULT = new ReturnStatementNode(null); :}
             | BREAK SEMI
+            {: RESULT = new BreakStatementNode(); :}
             | CONTINUE SEMI
-            | block;
+            {: RESULT = new ContinueStatementNode(); :}
+            | block:b
+            {: RESULT = b; :};
 
 assign_op ::= ASSIGN
+            {: RESULT = "="; :}
             | PLUS_ASSIGN
-            | MINUS_ASSIGN;
+            {: RESULT = "+="; :}
+            | MINUS_ASSIGN
+            {: RESULT = "-="; :};
 
-method_call ::= method_name LPAREN RPAREN
-              | method_name LPAREN expr RPAREN
-              | method_name LPAREN expr COMMA expr RPAREN
-              | CALLOUT LPAREN STRING_LITERAL COMMA callout_arg_list RPAREN;
+method_call ::= method_name:name LPAREN RPAREN
+              {: RESULT = new MethodCallNode(name, new ArrayList<ExprNode>()); :}
+              | method_name:name LPAREN expr:e RPAREN
+              {: ArrayList<ExprNode> args = new ArrayList<ExprNode>(); args.add(e); RESULT = new MethodCallNode(name, args); :}
+              | method_name:name LPAREN expr:e1 COMMA expr:e2 RPAREN
+              {: ArrayList<ExprNode> args = new ArrayList<ExprNode>(); args.add(e1); args.add(e2); RESULT = new MethodCallNode(name, args); :}
+              | CALLOUT LPAREN STRING_LITERAL:func COMMA callout_arg_list:args RPAREN
+              {: RESULT = new CalloutNode(func, args); :};
 
-method_name ::= ID;
+method_name ::= ID:name
+              {: RESULT = name; :};
 
-location ::= ID
-           | ID LBRACKET expr RBRACKET;
+location ::= ID:name
+           {: RESULT = new LocationNode(name); :}
+           | ID:name LBRACKET expr:index RBRACKET
+           {: RESULT = new ArrayLocationNode(name, index); :};
 
-expr ::= location
-       | method_call
-       | literal
-       | expr bin_op expr
-       | MINUS expr
-       | NOT expr
-       | LPAREN expr RPAREN;
+expr ::= location:loc
+       {: RESULT = loc; :}
+       | method_call:call
+       {: RESULT = call; :}
+       | literal:lit
+       {: RESULT = lit; :}
+       | expr:e1 bin_op:op expr:e2
+       {: RESULT = new BinOpNode(op, e1, e2); :}
+       | MINUS expr:e
+       {: RESULT = new UnaryOpNode("-", e); :}
+       | NOT expr:e
+       {: RESULT = new UnaryOpNode("!", e); :}
+       | LPAREN expr:e RPAREN
+       {: RESULT = e; :};
 
-callout_arg_list ::= callout_arg_list COMMA callout_arg
-                   | callout_arg;
+callout_arg_list ::= callout_arg_list:list COMMA callout_arg:arg
+                   {: list.add(arg); RESULT = list; :}
+                   | callout_arg:arg
+                   {: RESULT = new ArrayList<CalloutArgNode>(); RESULT.add(arg); :};
 
-callout_arg ::= expr
-              | STRING_LITERAL;
+callout_arg ::= expr:e
+              {: RESULT = new CalloutArgNode(e); :}
+              | STRING_LITERAL:s
+              {: RESULT = new CalloutArgNode(s); :};
 
-bin_op ::= arith_op
-         | rel_op
-         | eq_op
-         | cond_op;
+bin_op ::= arith_op:op {: RESULT = op; :}
+         | rel_op:op {: RESULT = op; :}
+         | eq_op:op {: RESULT = op; :}
+         | cond_op:op {: RESULT = op; :};
 
-arith_op ::= PLUS | MINUS | TIMES | DIVIDE | MOD;
+arith_op ::= PLUS {: RESULT = "+"; :}
+           | MINUS {: RESULT = "-"; :}
+           | TIMES {: RESULT = "*"; :}
+           | DIVIDE {: RESULT = "/"; :}
+           | MOD {: RESULT = "%"; :};
 
-rel_op ::= LT | GT | LTE | GTE;
+rel_op ::= LT {: RESULT = "<"; :}
+         | GT {: RESULT = ">"; :}
+         | LTE {: RESULT = "<="; :}
+         | GTE {: RESULT = ">="; :};
 
-eq_op ::= EQ | NEQ;
+eq_op ::= EQ {: RESULT = "=="; :}
+        | NEQ {: RESULT = "!="; :};
 
-cond_op ::= AND | OR;
+cond_op ::= AND {: RESULT = "&&"; :}
+          | OR {: RESULT = "||"; :};
 
-literal ::= INT_LITERAL
-          | CHAR_LITERAL
-          | bool_literal;
+literal ::= INT_LITERAL:value
+          {: RESULT = new IntLiteralNode(value); :}
+          | CHAR_LITERAL:value
+          {: RESULT = new CharLiteralNode(value); :}
+          | bool_literal:value
+          {: RESULT = value; :};
 
-bool_literal ::= TRUE | FALSE;
+bool_literal ::= TRUE
+               {: RESULT = new BooleanLiteralNode(true); :}
+               | FALSE
+               {: RESULT = new BooleanLiteralNode(false); :};

@@ -1,0 +1,17 @@
+package compiler.ast;
+
+import java.util.ArrayList;
+
+public class BlockNode extends StatementNode {
+    public ArrayList<VarDeclNode> varDeclarations;
+    public ArrayList<StatementNode> statements;
+
+    public BlockNode(ArrayList<VarDeclNode> varDeclarations, ArrayList<StatementNode> statements) {
+        this.varDeclarations = varDeclarations;
+        this.statements = statements;
+    }
+    @Override
+    public String toString() {
+        return "Block";
+    }
+}
