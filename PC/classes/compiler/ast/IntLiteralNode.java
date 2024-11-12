@@ -1,9 +1,10 @@
 package compiler.ast;
 
 public class IntLiteralNode extends LiteralNode {
-    public int value;
+    private int value;
 
     public IntLiteralNode(int value) {
+        super(String.valueOf(value), "int");
         this.value = value;
     }
 }

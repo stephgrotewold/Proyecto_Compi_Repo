@@ -14,4 +14,11 @@ public class BlockNode extends StatementNode {
     public String toString() {
         return "Block";
     }
+
+    @Override
+    public ArrayList<ASTNode> getChildren() {
+        ArrayList<ASTNode> children = new ArrayList<>();
+        children.addAll(statements);
+        return children;
+    }
 }

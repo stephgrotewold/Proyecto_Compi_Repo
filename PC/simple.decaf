@@ -1,12 +1,25 @@
 class Program {
-    int x; //P
-    int y;
+    int x;
+    boolean y;
 
-    void sum(int z) {
-        int w;
-        x = y + z;
-        if (true) {
-            return true;
+    void main() {
+        x = true;        // Error: asignación de boolean a int
+        y = 42;         // Error: asignación de int a boolean
+        
+        if (x) {       // Error: condición debe ser boolean (x es int)
+            y = 5;     // Error: asignación de int a boolean
+        } else {
+            x = false; // Error: asignación de boolean a int
         }
+        
+        return 5;      // Error: return int en método void
+    }
+
+    int foo(int a, boolean b) {
+        return true;   // Error: return boolean en método int
+    }
+
+    void bar() {
+        foo(true, 42); // Error: tipos de argumentos incorrectos (true no es int, 42 no es boolean)
     }
 }

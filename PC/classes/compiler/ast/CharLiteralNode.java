@@ -1,9 +1,10 @@
 package compiler.ast;
 
 public class CharLiteralNode extends LiteralNode {
-    public char value;
+    private char value;
 
     public CharLiteralNode(char value) {
+        super(String.valueOf(value), "char");
         this.value = value;
     }
 }

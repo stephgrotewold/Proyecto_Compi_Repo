@@ -1,12 +1,13 @@
 package compiler.ast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MethodCallNode extends ExprNode {
     public String name;
-    public ArrayList<ExprNode> arguments;
+    public List<ExprNode> arguments;
 
-    public MethodCallNode(String name, ArrayList<ExprNode> arguments) {
+    public MethodCallNode(String name, List<ExprNode> arguments) {
         this.name = name;
         this.arguments = arguments;
     }

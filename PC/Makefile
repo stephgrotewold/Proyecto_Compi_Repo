@@ -57,9 +57,12 @@ parse: compile
 ast: compile
 	$(JAVA) -Dorg.slf4j.simpleLogger.defaultLogLevel=INFO -cp "$(FULL_CLASSPATH):$(BUILD_DIR)" compiler.Compiler -target ast simple.decaf
 
+semantic: compile
+	$(JAVA) -cp "$(FULL_CLASSPATH):$(BUILD_DIR)" compiler.Compiler -target semantic simple.decaf
+
 clean:
 	rm -f $(LEXER_DIR)/Lexer.java $(PARSER_DIR)/sym.java $(PARSER_DIR)/Parser.java
 	rm -rf $(BUILD_DIR)
 	rm -f ast_output.png
 
-.PHONY: all lexer parser compile scan parse ast clean get-slf4j
+.PHONY: all lexer parser compile scan parse ast semanticclean get-slf4j

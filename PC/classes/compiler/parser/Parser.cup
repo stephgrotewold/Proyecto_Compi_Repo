@@ -166,19 +166,19 @@ statement_list ::= statement_list:list statement:stmt
                  {: RESULT = new ArrayList<StatementNode>(); :};
 
 statement ::= location:loc assign_op:op expr:e SEMI
-            {: RESULT = new AssignmentNode(loc, op, e); :}
+            {: RESULT = new AssignNode(loc, op, e); :}
             | method_call:call SEMI
             {: RESULT = new MethodCallStatementNode(call); :}
             | IF LPAREN expr:cond RPAREN block:thenBlock ELSE block:elseBlock
-            {: RESULT = new IfStatementNode(cond, thenBlock, elseBlock); :}
+            {: RESULT = new IfNode(cond, thenBlock, elseBlock); :}
             | IF LPAREN expr:cond RPAREN block:thenBlock
-            {: RESULT = new IfStatementNode(cond, thenBlock, null); :}
+            {: RESULT = new IfNode(cond, thenBlock, null); :}
             | FOR ID:var ASSIGN expr:init COMMA expr:cond block:body
             {: RESULT = new ForStatementNode(var, init, cond, body); :}
             | RETURN expr:e SEMI
-            {: RESULT = new ReturnStatementNode(e); :}
+            {: RESULT = new ReturnNode(e); :}
             | RETURN SEMI
-            {: RESULT = new ReturnStatementNode(null); :}
+            {: RESULT = new ReturnNode(null); :}
             | BREAK SEMI
             {: RESULT = new BreakStatementNode(); :}
             | CONTINUE SEMI
@@ -217,7 +217,7 @@ expr ::= location:loc
        | literal:lit
        {: RESULT = lit; :}
        | expr:e1 bin_op:op expr:e2
-       {: RESULT = new BinOpNode(op, e1, e2); :}
+       {: RESULT = new BinaryOpNode(e1, op, e2); :}
        | MINUS expr:e
        {: RESULT = new UnaryOpNode("-", e); :}
        | NOT expr:e
