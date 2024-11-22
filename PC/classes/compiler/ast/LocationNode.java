@@ -11,7 +11,8 @@ public class LocationNode extends ExprNode {
         return children;
     }
 
-    public LocationNode(String name) {
+    public LocationNode(String name, int line, int column) {
+        super(line, column);
         this.name = name;
     }
 

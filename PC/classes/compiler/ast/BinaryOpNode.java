@@ -7,7 +7,8 @@ public class BinaryOpNode extends ExprNode {
     public String operator;
     public ExprNode right;
 
-    public BinaryOpNode(ExprNode left, String operator, ExprNode right) {
+    public BinaryOpNode(ExprNode left, String operator, ExprNode right, int line, int column) {
+        super(line, column);
         this.left = left;
         this.operator = operator;
         this.right = right;

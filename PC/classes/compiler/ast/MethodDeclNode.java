@@ -8,7 +8,8 @@ public class MethodDeclNode extends ASTNode {
     public ArrayList<ParamNode> params;
     public BlockNode body;
 
-    public MethodDeclNode(TypeNode returnType, String name, ArrayList<ParamNode> params, BlockNode body) {
+    public MethodDeclNode(TypeNode returnType, String name, ArrayList<ParamNode> params, BlockNode body, int line, int column) {
+        super(line, column);
         this.returnType = returnType;
         this.name = name;
         this.params = params;

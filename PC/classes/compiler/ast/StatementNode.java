@@ -1,5 +1,7 @@
 package compiler.ast;
 
 public abstract class StatementNode extends ASTNode {
-    // Métodos comunes para todas las declaraciones
+    public StatementNode(int line, int column) {
+        super(line, column);
+    }
 }

@@ -131,28 +131,40 @@ public class Compiler {
     private static String currentMethod = "";
 
     private static void checkTypes(ASTNode node, SymbolTable symbolTable, String scope, SemanticErrorCollector errorCollector) {
+        if (node == null) return;
+        
         System.out.println("Checking node: " + node.getClass().getSimpleName());
         
         if (node instanceof MethodDeclNode) {
             MethodDeclNode methodNode = (MethodDeclNode) node;
             currentMethod = methodNode.name;
+            scope = "global." + methodNode.name;
         }
-        
+    
+        // Verificar el tipo de nodo y realizar las comprobaciones correspondientes
         if (node instanceof AssignNode) {
-            checkAssignment((AssignNode)node, symbolTable, scope, errorCollector);
-        } else if (node instanceof IfNode) {
-            checkIfStatement((IfNode)node, symbolTable, scope, errorCollector);
-        } else if (node instanceof ReturnNode) {
-            checkReturnStatement((ReturnNode)node, symbolTable, currentMethod, errorCollector);
+            checkAssignment((AssignNode) node, symbolTable, scope, errorCollector);
         }
-
-        // Recorrer hijos
-        for (ASTNode child : node.getChildren()) {
-            if (child != null) {
-                checkTypes(child, symbolTable, scope, errorCollector);
+        else if (node instanceof IfNode) {
+            IfNode ifNode = (IfNode) node;
+            checkIfCondition(ifNode, symbolTable, scope, errorCollector);
+            checkTypes(ifNode.thenBlock, symbolTable, scope, errorCollector);
+            if (ifNode.elseBlock != null) {
+                checkTypes(ifNode.elseBlock, symbolTable, scope, errorCollector);
             }
         }
-}
+        else if (node instanceof ReturnNode) {
+            checkReturnStatement((ReturnNode) node, symbolTable, currentMethod, errorCollector);
+        }
+        else if (node instanceof MethodCallStatementNode) {
+            checkMethodCall(((MethodCallStatementNode) node).methodCall, symbolTable, scope, errorCollector);
+        }
+    
+        // Recorrer los hijos del nodo
+        for (ASTNode child : node.getChildren()) {
+            checkTypes(child, symbolTable, scope, errorCollector);
+        }
+    }
 
     private static String getCurrentMethodFromScope(String scope) {
         // Si el scope es "global.methodName", retorna "methodName"
@@ -167,33 +179,51 @@ public class Compiler {
 
     
     private static void checkAssignment(AssignNode assign, SymbolTable symbolTable, String scope, SemanticErrorCollector errorCollector) {
-        System.out.println("Checking assignment: " + assign.location.name);
+        System.out.println("\nDEBUG: Checking assignment to " + assign.location.name);
         
-        compiler.semantic.Symbol leftSymbol = symbolTable.lookup(assign.location.name, scope);
-        String exprType = getExpressionType(assign.expression, symbolTable, scope);
+        Symbol leftSymbol = symbolTable.lookup(assign.location.name, scope);
+        if (leftSymbol == null) {
+            System.out.println("DEBUG: Left symbol not found in scope: " + scope);
+            leftSymbol = symbolTable.lookup(assign.location.name, "global");
+        }
         
-        System.out.println("Assignment types - Left: " + leftSymbol.type + ", Right: " + exprType);
+        if (leftSymbol == null) {
+            System.out.println("DEBUG: Left symbol not found in any scope");
+            return;
+        }
         
-        if (!symbolTable.isCompatibleType(leftSymbol.type, exprType)) {
+        System.out.println("DEBUG: Left symbol type: " + leftSymbol.type);
+        
+        String rightType = getExpressionType(assign.expression, symbolTable, scope);
+        System.out.println("DEBUG: Right expression type: " + rightType);
+    
+        if (!rightType.equals(leftSymbol.type)) {
             errorCollector.addError(
                 "Type mismatch in assignment to '" + assign.location.name + 
-                "': cannot assign " + exprType + " to " + leftSymbol.type);
+                "': cannot assign " + rightType + " to " + leftSymbol.type,
+                assign.getLine(),
+                assign.getColumn());
         }
     }
     
-    private static void checkIfStatement(IfNode ifNode, SymbolTable symbolTable, String scope, SemanticErrorCollector errorCollector) {
+    private static void checkIfCondition(IfNode ifNode, SymbolTable symbolTable, String scope, SemanticErrorCollector errorCollector) {
         String conditionType = getExpressionType(ifNode.condition, symbolTable, scope);
         if (!conditionType.equals("boolean")) {
-            errorCollector.addError("If condition must be of type boolean, found: " + conditionType);
+            errorCollector.addError(
+                "If condition must be of type boolean, found: " + conditionType,
+                ifNode.getLine(),
+                ifNode.getColumn());
         }
     }
-    
     
     private static void checkReturnStatement(ReturnNode returnNode, SymbolTable symbolTable, String methodName, SemanticErrorCollector errorCollector) {
         Symbol methodSymbol = symbolTable.lookup(methodName, "global");
         
         if (methodSymbol == null) {
-            errorCollector.addError("Method '" + methodName + "' not found");
+            errorCollector.addError(
+                "Method '" + methodName + "' not found",
+                returnNode.getLine(),
+                returnNode.getColumn());
             return;
         }
     
@@ -208,67 +238,114 @@ public class Compiler {
         if (!symbolTable.isCompatibleType(expectedType, actualType)) {
             errorCollector.addError(
                 "Return type mismatch in method '" + methodName + 
-                "': expected " + expectedType + ", found " + actualType);
+                "': expected " + expectedType + ", found " + actualType,
+                returnNode.getLine(),
+                returnNode.getColumn());
         }
     }
     
     private static void checkFieldDeclaration(FieldDeclNode fieldDecl, SymbolTable symbolTable, String scope, SemanticErrorCollector errorCollector) {
         if (fieldDecl.type.typeName.equals("void")) {
-            errorCollector.addError("Cannot declare variable of type void");
+            errorCollector.addError(
+                "Cannot declare variable of type void",
+                fieldDecl.getLine(),
+                fieldDecl.getColumn()
+            );
         }
     }
 
     private static void checkMethodCall(MethodCallNode call, SymbolTable symbolTable, String scope, SemanticErrorCollector errorCollector) {
         Symbol method = symbolTable.lookup(call.name, scope);
-        
-        if (!method.isMethod) {
-            errorCollector.addError("'" + call.name + "' is not a method");
+        if (method == null || !method.isMethod) {
+            errorCollector.addError(
+                "Method '" + call.name + "' not found",
+                call.getLine(),
+                call.getColumn());
             return;
         }
     
         // Verificar número de argumentos
-        if (call.arguments.size() != method.paramTypes.size()) {
+        if (method.paramTypes.size() != call.arguments.size()) {  // Cambiado
             errorCollector.addError(
-                "Method '" + call.name + "' called with wrong number of arguments. " +
-                "Expected " + method.paramTypes.size() + ", got " + call.arguments.size());
+                "Wrong number of arguments for method '" + call.name + "'",
+                call.getLine(),
+                call.getColumn());
             return;
         }
     
         // Verificar tipos de argumentos
         for (int i = 0; i < call.arguments.size(); i++) {
-            String expectedType = method.paramTypes.get(i);
+            String expectedType = method.paramTypes.get(i);  // Cambiado
             String actualType = getExpressionType(call.arguments.get(i), symbolTable, scope);
-            
             if (!symbolTable.isCompatibleType(expectedType, actualType)) {
                 errorCollector.addError(
-                    "Type mismatch in argument " + (i + 1) + " of call to '" + call.name +
-                    "': expected " + expectedType + ", got " + actualType);
+                    "Type mismatch in argument " + (i+1) + " of method '" + call.name + 
+                    "': expected " + expectedType + ", found " + actualType,
+                    call.getLine(),
+                    call.getColumn());
             }
         }
     }
     
-    // Añadir este método auxiliar
     private static String getExpressionType(ExprNode expr, SymbolTable symbolTable, String scope) {
-        System.out.println("Getting type for expression: " + expr.getClass().getSimpleName());
-        
-        if (expr instanceof LocationNode) {
-            Symbol symbol = symbolTable.lookup(((LocationNode)expr).name, scope);
-            System.out.println("Location type: " + symbol.type);
-            return symbol.type;
-        } else if (expr instanceof LiteralNode) {
-            String type = ((LiteralNode)expr).getType();
-            System.out.println("Literal type: " + type);
-            return type;
-        } else if (expr instanceof BooleanLiteralNode) {
-            System.out.println("Boolean literal type: boolean");
-            return "boolean";
-        } else if (expr instanceof IntLiteralNode) {
-            System.out.println("Int literal type: int");
-            return "int";
+        if (expr == null) {
+            System.out.println("DEBUG: Expression is null");
+            return "undefined";
         }
-        
-        System.out.println("Unknown expression type");
-        return "unknown";
+    
+        System.out.println("DEBUG: Expression class: " + expr.getClass().getName());
+    
+        if (expr instanceof LiteralNode) {
+            LiteralNode lit = (LiteralNode) expr;
+            String type = lit.getType();
+            System.out.println("DEBUG: LiteralNode type: " + type);
+            return type;
+        }
+    
+        if (expr instanceof LocationNode) {
+            LocationNode loc = (LocationNode) expr;
+            Symbol symbol = symbolTable.lookup(loc.name, scope);
+            if (symbol == null) {
+                symbol = symbolTable.lookup(loc.name, "global");
+            }
+            String type = symbol != null ? symbol.type : "undefined";
+            System.out.println("DEBUG: LocationNode " + loc.name + " type: " + type);
+            return type;
+        }
+    
+        if (expr instanceof BinaryOpNode) {
+            BinaryOpNode binOp = (BinaryOpNode) expr;
+            String leftType = getExpressionType(binOp.left, symbolTable, scope);
+            String rightType = getExpressionType(binOp.right, symbolTable, scope);
+            System.out.println("DEBUG: BinaryOp " + binOp.operator + " types: " + leftType + " and " + rightType);
+            
+            switch (binOp.operator) {
+                case "+": case "-": case "*": case "/": case "%":
+                    return (leftType.equals("int") && rightType.equals("int")) ? "int" : "undefined";
+                case "<": case ">": case "<=": case ">=": case "==": case "!=":
+                    return (leftType.equals(rightType)) ? "boolean" : "undefined";
+                case "&&": case "||":
+                    return (leftType.equals("boolean") && rightType.equals("boolean")) ? "boolean" : "undefined";
+                default:
+                    return "undefined";
+            }
+        }
+    
+        if (expr instanceof UnaryOpNode) {
+            UnaryOpNode unaryOp = (UnaryOpNode) expr;
+            String operandType = getExpressionType(unaryOp.expression, symbolTable, scope);
+            System.out.println("DEBUG: UnaryOp " + unaryOp.operator + " type: " + operandType);
+            
+            if (unaryOp.operator.equals("-")) {
+                return operandType.equals("int") ? "int" : "undefined";
+            }
+            if (unaryOp.operator.equals("!")) {
+                return operandType.equals("boolean") ? "boolean" : "undefined";
+            }
+        }
+    
+        System.out.println("DEBUG: Unknown expression type: " + expr.getClass().getName());
+        return "undefined";
     }
 
     private static void performLexicalAnalysis(FileReader fileReader) throws Exception {
@@ -291,6 +368,33 @@ public class Compiler {
 
         System.out.println("Lexical analysis (scanning) completed.");
     }
+
+    private static void checkVoidVariable(TypeNode type, SemanticErrorCollector errorCollector) {
+        if (type.typeName.equals("void")) {
+            errorCollector.addError(
+                "Cannot declare variable of type void",
+                type.getLine(),
+                type.getColumn()
+            );
+        }
+    }
+
+    // private static void debugPrintExpression(ExprNode expr) {
+    //     if (expr == null) {
+    //         System.out.println("Debug - Expression is null");
+    //         return;
+    //     }
+        
+    //     System.out.println("Debug - Expression type: " + expr.getClass().getName());
+        
+    //     if (expr instanceof BooleanLiteralNode) {
+    //         BooleanLiteralNode boolNode = (BooleanLiteralNode) expr;
+    //         System.out.println("Boolean value: " + boolNode.getValue());
+    //     } else if (expr instanceof IntLiteralNode) {
+    //         IntLiteralNode intNode = (IntLiteralNode) expr;
+    //         System.out.println("Int value: " + intNode.getValue());
+    //     }
+    // }
 
     private static ProgramNode performParsing(FileReader fileReader, String inputFile) throws Exception {
         Lexer lexer = new Lexer(fileReader);

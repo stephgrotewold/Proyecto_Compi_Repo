@@ -1,0 +1,174 @@
+classes/compiler/parser/Parser.java:662: error: cannot find symbol
+                 RESULT = new MethodDeclNode(new TypeNode("void", vleft, vright), name, params, b, vleft, vright); 
+                                                                  ^
+  symbol:   variable vleft
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:662: error: cannot find symbol
+                 RESULT = new MethodDeclNode(new TypeNode("void", vleft, vright), name, params, b, vleft, vright); 
+                                                                         ^
+  symbol:   variable vright
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:662: error: cannot find symbol
+                 RESULT = new MethodDeclNode(new TypeNode("void", vleft, vright), name, params, b, vleft, vright); 
+                                                                                                   ^
+  symbol:   variable vleft
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:662: error: cannot find symbol
+                 RESULT = new MethodDeclNode(new TypeNode("void", vleft, vright), name, params, b, vleft, vright); 
+                                                                                                          ^
+  symbol:   variable vright
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:719: error: cannot find symbol
+                 RESULT = new BlockNode(vars, stmts,  lcleft, lcright); 
+                                                      ^
+  symbol:   variable lcleft
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:719: error: cannot find symbol
+                 RESULT = new BlockNode(vars, stmts,  lcleft, lcright); 
+                                                              ^
+  symbol:   variable lcright
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:794: error: cannot find symbol
+                 RESULT = new TypeNode("int", ileft, iright); 
+                                              ^
+  symbol:   variable ileft
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:794: error: cannot find symbol
+                 RESULT = new TypeNode("int", ileft, iright); 
+                                                     ^
+  symbol:   variable iright
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:803: error: cannot find symbol
+                 RESULT = new TypeNode("boolean", bleft, bright); 
+                                                  ^
+  symbol:   variable bleft
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:803: error: cannot find symbol
+                 RESULT = new TypeNode("boolean", bleft, bright); 
+                                                         ^
+  symbol:   variable bright
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:875: error: cannot find symbol
+                 RESULT = new IfNode(cond, thenBlock, elseBlock, ileft, iright); 
+                                                                 ^
+  symbol:   variable ileft
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:875: error: cannot find symbol
+                 RESULT = new IfNode(cond, thenBlock, elseBlock, ileft, iright); 
+                                                                        ^
+  symbol:   variable iright
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:890: error: cannot find symbol
+                 RESULT = new IfNode(cond, thenBlock, null, ileft, iright); 
+                                                            ^
+  symbol:   variable ileft
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:890: error: cannot find symbol
+                 RESULT = new IfNode(cond, thenBlock, null, ileft, iright); 
+                                                                   ^
+  symbol:   variable iright
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:911: error: cannot find symbol
+                 RESULT = new ForStatementNode(var, init, cond, body, fleft, fright); 
+                                                                      ^
+  symbol:   variable fleft
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:911: error: cannot find symbol
+                 RESULT = new ForStatementNode(var, init, cond, body, fleft, fright); 
+                                                                             ^
+  symbol:   variable fright
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:923: error: cannot find symbol
+                 RESULT = new ReturnNode(e, rleft, rright); 
+                                            ^
+  symbol:   variable rleft
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:923: error: cannot find symbol
+                 RESULT = new ReturnNode(e, rleft, rright); 
+                                                   ^
+  symbol:   variable rright
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:932: error: cannot find symbol
+                 RESULT = new ReturnNode(null, rleft, rright); 
+                                               ^
+  symbol:   variable rleft
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:932: error: cannot find symbol
+                 RESULT = new ReturnNode(null, rleft, rright); 
+                                                      ^
+  symbol:   variable rright
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:941: error: cannot find symbol
+                 RESULT = new BreakStatementNode(bleft, bright); 
+                                                 ^
+  symbol:   variable bleft
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:941: error: cannot find symbol
+                 RESULT = new BreakStatementNode(bleft, bright); 
+                                                        ^
+  symbol:   variable bright
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:950: error: cannot find symbol
+                 RESULT = new ContinueStatementNode(cleft, cright); 
+                                                    ^
+  symbol:   variable cleft
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:950: error: cannot find symbol
+                 RESULT = new ContinueStatementNode(cleft, cright); 
+                                                           ^
+  symbol:   variable cright
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:1049: error: cannot find symbol
+                 RESULT = new CalloutNode(func, args, calloutleft, calloutright); 
+                                                      ^
+  symbol:   variable calloutleft
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:1049: error: cannot find symbol
+                 RESULT = new CalloutNode(func, args, calloutleft, calloutright); 
+                                                                   ^
+  symbol:   variable calloutright
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:1154: error: cannot find symbol
+                 RESULT = new UnaryOpNode("-", e, mleft, mright); 
+                                                  ^
+  symbol:   variable mleft
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:1154: error: cannot find symbol
+                 RESULT = new UnaryOpNode("-", e, mleft, mright); 
+                                                         ^
+  symbol:   variable mright
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:1166: error: cannot find symbol
+                 RESULT = new UnaryOpNode("!", e, nleft, nright); 
+                                                  ^
+  symbol:   variable nleft
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:1166: error: cannot find symbol
+                 RESULT = new UnaryOpNode("!", e, nleft, nright); 
+                                                         ^
+  symbol:   variable nright
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:1439: error: cannot find symbol
+                 RESULT = new BooleanLiteralNode(true, tleft, tright); 
+                                                       ^
+  symbol:   variable tleft
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:1439: error: cannot find symbol
+                 RESULT = new BooleanLiteralNode(true, tleft, tright); 
+                                                              ^
+  symbol:   variable tright
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:1448: error: cannot find symbol
+                 RESULT = new BooleanLiteralNode(false, fleft, fright); 
+                                                        ^
+  symbol:   variable fleft
+  location: class Parser.CUP$Parser$actions
+classes/compiler/parser/Parser.java:1448: error: cannot find symbol
+                 RESULT = new BooleanLiteralNode(false, fleft, fright); 
+                                                               ^
+  symbol:   variable fright
+  location: class Parser.CUP$Parser$actions
+Note: classes/compiler/parser/Parser.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+34 errors
+make: *** [compile] Error 1

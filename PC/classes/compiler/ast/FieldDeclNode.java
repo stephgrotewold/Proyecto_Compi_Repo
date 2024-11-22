@@ -6,7 +6,8 @@ public class FieldDeclNode extends ASTNode {
     public TypeNode type;
     public ArrayList<FieldNode> fields;
 
-    public FieldDeclNode(TypeNode type, ArrayList<FieldNode> fields) {
+    public FieldDeclNode(TypeNode type, ArrayList<FieldNode> fields, int line, int column) {
+        super(line, column);
         this.type = type;
         this.fields = fields;
     }

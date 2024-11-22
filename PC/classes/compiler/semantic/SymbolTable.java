@@ -31,14 +31,16 @@ public class SymbolTable {
     }
     
     // Método adicional para métodos
-    public void addMethod(String name, String type, String scope) {
+    public void addMethod(String name, String type, String scope, int line, int column) {
         String key = scope + "." + name;
         if (symbols.containsKey(key)) {
-            throw new SemanticException("Method '" + name + "' already declared in scope '" + scope + "'");
+            throw new SemanticException(String.format("Line %d, Column %d: Method '%s' already declared in scope '%s'",
+                line, column, name, scope));
         }
-        symbols.put(key, new Symbol(name, type, scope, true));
+        Symbol method = new Symbol(name, type, scope, true);
+        symbols.put(key, method);
     }
-
+    
     public void addMethodParam(String methodName, String scope, String paramType) {
         Symbol method = lookup(methodName, scope);
         if (method != null && method.isMethod) {
@@ -70,17 +72,12 @@ public class SymbolTable {
         if (expected == null || actual == null) {
             return false;
         }
-        
-        // Si los tipos son iguales, son compatibles
         if (expected.equals(actual)) {
             return true;
         }
-        
-        // Manejo especial para void
-        if (expected.equals("void")) {
-            return actual.equals("void");
+        if (expected.equals("void") && actual.equals("void")) {
+            return true;
         }
-        
         return false;
     }
 }

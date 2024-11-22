@@ -99,10 +99,10 @@ precedence right NOT;
 /* The grammar rules */
 start with program;
 
-program ::= CLASS:c ID:name LCURLY field_decl_list:fields method_decl_list:methods RCURLY
-          {: RESULT = new ProgramNode(name, fields, methods, cleft, cright); :}
-          | CLASS:c PROGRAM_ID:name LCURLY field_decl_list:fields method_decl_list:methods RCURLY
-          {: RESULT = new ProgramNode(name, fields, methods, cleft, cright); :};
+program ::= CLASS ID:name LCURLY field_decl_list:fields method_decl_list:methods RCURLY
+          {: RESULT = new ProgramNode(name, fields, methods, nameleft, nameright); :}
+          | CLASS PROGRAM_ID:name LCURLY field_decl_list:fields method_decl_list:methods RCURLY
+          {: RESULT = new ProgramNode(name, fields, methods, nameleft, nameright); :};
 
 field_decl_list ::= field_decl_list:list field_decl:decl
                   {: list.add(decl); RESULT = list; :}
@@ -129,7 +129,7 @@ method_decl_list ::= method_decl_list:list method_decl:decl
 
 method_decl ::= type:t ID:name LPAREN param_list:params RPAREN block:b
               {: RESULT = new MethodDeclNode(t, name, params, b, tleft, tright); :}
-              | VOID:v ID:name LPAREN param_list:params RPAREN block:b
+              | VOID ID:name LPAREN param_list:params RPAREN block:b
               {: RESULT = new MethodDeclNode(new TypeNode("void", vleft, vright), name, params, b, vleft, vright); :};
 
 param_list ::= type:t ID:name
@@ -139,7 +139,7 @@ param_list ::= type:t ID:name
              | /* empty */
              {: RESULT = new ArrayList<ParamNode>(); :};
 
-block ::= LCURLY:lc var_decl_list:vars statement_list:stmts RCURLY
+block ::= LCURLY var_decl_list:vars statement_list:stmts RCURLY
         {: RESULT = new BlockNode(vars, stmts,  lcleft, lcright); :};
 
 var_decl_list ::= var_decl_list:list var_decl:decl
@@ -155,9 +155,9 @@ id_list ::= id_list:list COMMA ID:name
           | ID:name
           {: RESULT = new ArrayList<String>(); RESULT.add(name); :};
 
-type ::= INT:i
+type ::= INT
        {: RESULT = new TypeNode("int", ileft, iright); :}
-       | BOOLEAN:b
+       | BOOLEAN
        {: RESULT = new TypeNode("boolean", bleft, bright); :};
 
 statement_list ::= statement_list:list statement:stmt
@@ -169,19 +169,19 @@ statement ::= location:loc assign_op:op expr:e SEMI
             {: RESULT = new AssignNode(loc, op, e, locleft, locright); :}
             | method_call:call SEMI
             {: RESULT = new MethodCallStatementNode(call, callleft, callright); :}
-            | IF:i LPAREN expr:cond RPAREN block:thenBlock ELSE block:elseBlock
+            | IF LPAREN expr:cond RPAREN block:thenBlock ELSE block:elseBlock
             {: RESULT = new IfNode(cond, thenBlock, elseBlock, ileft, iright); :}
-            | IF:i LPAREN expr:cond RPAREN block:thenBlock
+            | IF LPAREN expr:cond RPAREN block:thenBlock
             {: RESULT = new IfNode(cond, thenBlock, null, ileft, iright); :}
-            | FOR:f ID:var ASSIGN expr:init COMMA expr:cond block:body
+            | FOR ID:var ASSIGN expr:init COMMA expr:cond block:body
             {: RESULT = new ForStatementNode(var, init, cond, body, fleft, fright); :}
-            | RETURN:r expr:e SEMI
+            | RETURN expr:e SEMI
             {: RESULT = new ReturnNode(e, rleft, rright); :}
-            | RETURN:r SEMI
+            | RETURN SEMI
             {: RESULT = new ReturnNode(null, rleft, rright); :}
-            | BREAK:b SEMI
+            | BREAK SEMI
             {: RESULT = new BreakStatementNode(bleft, bright); :}
-            | CONTINUE:c SEMI
+            | CONTINUE SEMI
             {: RESULT = new ContinueStatementNode(cleft, cright); :}
             | block:b
             {: RESULT = b; :};
@@ -199,7 +199,7 @@ method_call ::= method_name:name LPAREN RPAREN
               {: ArrayList<ExprNode> args = new ArrayList<ExprNode>(); args.add(e); RESULT = new MethodCallNode(name, args, nameleft, nameright); :}
               | method_name:name LPAREN expr:e1 COMMA expr:e2 RPAREN
               {: ArrayList<ExprNode> args = new ArrayList<ExprNode>(); args.add(e1); args.add(e2); RESULT = new MethodCallNode(name, args, nameleft, nameright); :}
-              | CALLOUT:callout LPAREN STRING_LITERAL:func COMMA callout_arg_list:args RPAREN
+              | CALLOUT LPAREN STRING_LITERAL:func COMMA callout_arg_list:args RPAREN
               {: RESULT = new CalloutNode(func, args, calloutleft, calloutright); :};
 
 method_name ::= ID:name
@@ -218,9 +218,9 @@ expr ::= location:loc
        {: RESULT = lit; :}
        | expr:e1 bin_op:op expr:e2
        {: RESULT = new BinaryOpNode(e1, op, e2, e1left, e1right); :}
-       | MINUS:m expr:e
+       | MINUS expr:e
        {: RESULT = new UnaryOpNode("-", e, mleft, mright); :}
-       | NOT:n expr:e
+       | NOT expr:e
        {: RESULT = new UnaryOpNode("!", e, nleft, nright); :}
        | LPAREN expr:e RPAREN
        {: RESULT = e; :};
@@ -258,13 +258,13 @@ cond_op ::= AND {: RESULT = "&&"; :}
           | OR {: RESULT = "||"; :};
 
 literal ::= INT_LITERAL:value
-          {: RESULT = new IntLiteralNode(value.toString(), valueleft, valueright); :}
+          {: RESULT = new IntLiteralNode(value, valueleft, valueright); :}
           | CHAR_LITERAL:value
-          {: RESULT = new CharLiteralNode(value,  valueleft, valueright); :}
+          {: RESULT = new CharLiteralNode(value, valueleft, valueright); :}
           | bool_literal:value
           {: RESULT = value; :};
 
-bool_literal ::= TRUE:t
+bool_literal ::= TRUE
                {: RESULT = new BooleanLiteralNode(true, tleft, tright); :}
-               | FALSE:f
+               | FALSE
                {: RESULT = new BooleanLiteralNode(false, fleft, fright); :};

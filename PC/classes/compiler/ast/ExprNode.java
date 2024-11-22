@@ -1,5 +1,7 @@
 package compiler.ast;
 
 public abstract class ExprNode extends ASTNode {
-    // Métodos comunes para todas las expresiones
+    public ExprNode(int line, int column) {
+        super(line, column);
+    }
 }

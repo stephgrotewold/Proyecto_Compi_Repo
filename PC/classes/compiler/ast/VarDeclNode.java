@@ -6,7 +6,8 @@ public class VarDeclNode extends ASTNode {
     public TypeNode type;
     public ArrayList<String> variables;
 
-    public VarDeclNode(TypeNode type, ArrayList<String> variables) {
+    public VarDeclNode(TypeNode type, ArrayList<String> variables, int line, int column) {
+        super(line, column);
         this.type = type;
         this.variables = variables;
     }

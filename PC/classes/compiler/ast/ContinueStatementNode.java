@@ -1,5 +1,13 @@
 package compiler.ast;
+import java.util.ArrayList;
 
 public class ContinueStatementNode extends StatementNode {
-    // No additional fields needed
+    public ContinueStatementNode(int line, int column) {
+        super(line, column);
+    }
+
+    @Override
+    public ArrayList<ASTNode> getChildren() {
+        return new ArrayList<>();
+    }
 }

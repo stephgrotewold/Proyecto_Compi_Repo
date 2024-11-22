@@ -7,7 +7,8 @@ public class ProgramNode extends ASTNode {
     public ArrayList<FieldDeclNode> fields;
     public ArrayList<MethodDeclNode> methods;
 
-    public ProgramNode(String name, ArrayList<FieldDeclNode> fields, ArrayList<MethodDeclNode> methods) {
+    public ProgramNode(String name, ArrayList<FieldDeclNode> fields, ArrayList<MethodDeclNode> methods, int line, int column) {
+        super(line, column);
         this.name = name;
         this.fields = fields;
         this.methods = methods;

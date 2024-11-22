@@ -42,7 +42,7 @@ $(LEXER_DIR):
 $(BUILD_DIR) $(BUILD_PARSER_DIR) $(BUILD_LEXER_DIR):
 	mkdir -p $@
 
-compile: lexer parser | $(BUILD_DIR) $(BUILD_PARSER_DIR) $(BUILD_LEXER_DIR)
+compile: clean lexer parser | $(BUILD_DIR) $(BUILD_PARSER_DIR) $(BUILD_LEXER_DIR)
 	$(JAVAC) -cp "$(FULL_CLASSPATH)" -d $(BUILD_DIR) \
 		$(SRC_DIR)/compiler/*.java \
 		$(PARSER_DIR)/*.java \

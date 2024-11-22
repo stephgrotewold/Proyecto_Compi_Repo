@@ -2,18 +2,24 @@ package compiler.ast;
 
 import java.util.ArrayList;
 
-public class LiteralNode extends ExprNode {
-    private String value;
-    private String type;
+public abstract class LiteralNode extends ExprNode {
+    protected Object value;
+    protected String type;
 
-    public LiteralNode(String value, String type) {
+    public LiteralNode(Object value, String type, int line, int column) {
+        super(line, column);
         this.value = value;
         this.type = type;
+    }
+
+    public Object getValue() {
+        return value;
     }
 
     public String getType() {
         return type;
     }
+
 
     @Override
     public String toString() {

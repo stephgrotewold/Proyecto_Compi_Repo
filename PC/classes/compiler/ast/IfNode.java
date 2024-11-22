@@ -7,7 +7,8 @@ public class IfNode extends StatementNode {
     public BlockNode thenBlock;
     public BlockNode elseBlock;  // puede ser null
 
-    public IfNode(ExprNode condition, BlockNode thenBlock, BlockNode elseBlock) {
+    public IfNode(ExprNode condition, BlockNode thenBlock, BlockNode elseBlock, int line, int column) {
+        super(line, column);
         this.condition = condition;
         this.thenBlock = thenBlock;
         this.elseBlock = elseBlock;

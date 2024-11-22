@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class CalloutNode extends MethodCallNode {
     public ArrayList<CalloutArgNode> calloutArgs;
 
-    public CalloutNode(String function, ArrayList<CalloutArgNode> arguments) {
-        super(function, new ArrayList<>()); // Llamada al constructor de MethodCallNode
+    public CalloutNode(String function, ArrayList<CalloutArgNode> arguments, int line, int column) {
+        super(function, new ArrayList<>(), line, column); // Llamada al constructor de MethodCallNode
         this.calloutArgs = arguments;
     }
 
