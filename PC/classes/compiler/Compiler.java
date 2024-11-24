@@ -5,6 +5,8 @@ import compiler.parser.Parser;
 import compiler.semantic.*;
 import compiler.semantic.Symbol;
 import compiler.ast.*;
+import compiler.irt.IRGenerator;
+import compiler.irt.IRNode;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -54,7 +56,7 @@ public class Compiler {
 
             if (targetStage.equals("scan")) {
                 performLexicalAnalysis(fileReader);
-            } else if (targetStage.equals("parse") || targetStage.equals("ast") || targetStage.equals("semantic")) {
+            } else if (targetStage.equals("parse") || targetStage.equals("ast") || targetStage.equals("semantic") || targetStage.equals("irt")) {
                 ProgramNode ast = performParsing(fileReader, inputFile);
                 
                 if (targetStage.equals("ast")) {
@@ -63,6 +65,10 @@ public class Compiler {
 
                 if (targetStage.equals("semantic")) {
                     checkSemantics(ast);
+                }
+
+                if (targetStage.equals("irt")) {
+                    generateIntermediateRepresentation(ast);
                 }
             }
         } catch (IOException e) {
@@ -450,5 +456,13 @@ public class Compiler {
         }
     
         return graphNode;
+    }
+    
+    private static void generateIntermediateRepresentation(ProgramNode ast) {
+        System.out.println("Generating Intermediate Representation Tree (IRT)...");
+        IRNode irt = IRGenerator.generateIR(ast); // Genera el IRT usando el generador
+        System.out.println("IRT:");
+        System.out.println(irt.toIR()); // Imprime la representación intermedia
+        System.out.println("IRT generation completed.");
     }
 }

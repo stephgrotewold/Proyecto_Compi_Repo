@@ -60,6 +60,9 @@ ast: compile
 semantic: compile
 	$(JAVA) -cp "$(FULL_CLASSPATH):$(BUILD_DIR)" compiler.Compiler -target semantic simple.decaf
 
+irt: compile
+	$(JAVA) -cp "$(FULL_CLASSPATH):$(BUILD_DIR)" compiler.Compiler -target irt simple.decaf
+	
 clean:
 	rm -f $(LEXER_DIR)/Lexer.java $(PARSER_DIR)/sym.java $(PARSER_DIR)/Parser.java
 	rm -rf $(BUILD_DIR)

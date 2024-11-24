@@ -23,7 +23,7 @@ public abstract class LiteralNode extends ExprNode {
 
     @Override
     public String toString() {
-        return "Literal: " + value;
+        return "Literal: " + value + " (" + type + ")";
     }
 
     @Override
